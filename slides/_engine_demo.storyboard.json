@@ -1,0 +1,557 @@
+{
+ "meta": {
+  "title": "카메라 모션 엔진 시험",
+  "subtitle": "전환 12종 · 머묾 5종 · 영상 슬라이드",
+  "speaker": "엔진 담당",
+  "affiliation": "덱 제작",
+  "event": "엔진 시험",
+  "date": "2026-11-15",
+  "talk_minutes": 5,
+  "qa_minutes": 0,
+  "revision": 1
+ },
+ "concept": {
+  "name": "엔진 시험",
+  "one_line": "모든 카메라 전환과 머묾 움직임을 한 번씩 써 보는 시험 덱",
+  "motif": "가는 테두리의 원(카메라가 파고드는 점)",
+  "palette": {
+   "bg0": "#0e1013",
+   "bg1": "#181c22",
+   "ink": "#f2efe6",
+   "mut": "#8b929b",
+   "accent": "#ffd84a",
+   "accent2": "#55c8ff",
+   "ok": "#7bd88f",
+   "bad": "#ff5c5c",
+   "paper": "#f1ebdd",
+   "paperInk": "#1b1d1a"
+  },
+  "fonts": {
+   "display": "Paperlogy 900",
+   "body": "Pretendard",
+   "serif": "Noto Serif KR",
+   "mono": "JetBrains Mono",
+   "number": "Anton"
+  },
+  "camera_language": "1장은 가로 줄(row)에서 상하좌우와 옆면 회전을 섞고, 2장은 호(arc) 위에서 돈다. 장 경계는 pull-out."
+ },
+ "chapters": [
+  {
+   "id": "d1",
+   "title": "카메라 전환 1",
+   "file": "slides/_engine_demo.js",
+   "minutes": 3,
+   "art": {
+    "bg": "glow",
+    "medium": "DOM 타이포, SVG 도식",
+    "motion": "카드 등장, 선 그리기",
+    "texture": "부드러운 빛"
+   },
+   "world": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "ry": 0
+   },
+   "layout": "row",
+   "spacing": 2400,
+   "x_path": "엔진시험/카메라1.md"
+  },
+  {
+   "id": "d2",
+   "title": "카메라 전환 2",
+   "file": "slides/_engine_demo.js",
+   "minutes": 2,
+   "art": {
+    "bg": "field",
+    "medium": "점 입자, 큰 숫자",
+    "motion": "막대 성장",
+    "texture": "깊이 있는 점"
+   },
+   "world": {
+    "x": 14000,
+    "y": 0,
+    "z": -3000,
+    "ry": -15
+   },
+   "layout": "arc",
+   "spacing": 2300,
+   "x_path": "엔진시험/카메라2.md"
+  }
+ ],
+ "slides": [
+  {
+   "n": 1,
+   "id": "demo-title",
+   "chapter": "d1",
+   "type": "statement",
+   "title": "카메라 모션 엔진 시험",
+   "screen": [
+    "엔진 시험 덱",
+    "카메라 모션 엔진",
+    "슬라이드를 3D 공간에 놓고, 넘길 때 카메라가 움직인다"
+   ],
+   "builds": [
+    "제목과 부제",
+    "전환 12종 이름표"
+   ],
+   "visual": "왼쪽 큰 제목, 오른쪽 위 천천히 도는 점선 원, 아래 이름표 12개",
+   "camera": {
+    "enter": "cut",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "엔진 시험 덱입니다. 첫 장은 들어오는 전환이 없습니다. [클릭] 아래에 전환 열두 가지 이름이 나옵니다."
+  },
+  {
+   "n": 2,
+   "id": "demo-push",
+   "chapter": "d1",
+   "type": "diagram",
+   "title": "push",
+   "screen": [
+    "push — 다음 단계로 나아간다",
+    "배치 계산",
+    "카메라 경로",
+    "머묾 움직임"
+   ],
+   "builds": [
+    "제목과 카드 1",
+    "카드 2와 연결선",
+    "카드 3과 설명"
+   ],
+   "visual": "카드 세 장이 가로로 놓이고 빌드마다 하나씩 솟음. 연결선 위로 점이 흐름",
+   "camera": {
+    "enter": "push",
+    "inner": "dolly-in",
+    "target": null
+   },
+   "seconds": 25,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "push는 가운데에서 뒤로 물러났다가 다음 슬라이드에 닿습니다. [클릭] 두 번째 카드입니다. [클릭] 세 번째 카드와 설명입니다."
+  },
+  {
+   "n": 3,
+   "id": "demo-parallax",
+   "chapter": "d1",
+   "type": "statement",
+   "title": "parallax",
+   "screen": [
+    "parallax — 층마다 다르게 움직인다",
+    "카메라가 조금만 움직여도 깊이가 생긴다"
+   ],
+   "builds": [
+    "세 층",
+    "층 이름표"
+   ],
+   "visual": "뒤 층 큰 원, 가운데 층 제목, 앞 층 작은 점들. x.cam에 서로 다른 비율",
+   "camera": {
+    "enter": "slide-r",
+    "inner": "parallax",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "slide-r로 오른쪽 칸에 왔습니다. 머무는 동안 층마다 다르게 움직입니다. [클릭] 층 이름표가 붙습니다."
+  },
+  {
+   "n": 4,
+   "id": "demo-table",
+   "chapter": "d1",
+   "type": "data",
+   "title": "inner 다섯 가지",
+   "screen": [
+    "inner — 머무는 동안의 카메라",
+    "drift",
+    "dolly-in",
+    "parallax",
+    "track",
+    "none"
+   ],
+   "builds": [
+    "표 전체"
+   ],
+   "visual": "다섯 줄 표. 옅은 강조 띠가 천천히 줄을 따라 내려감",
+   "camera": {
+    "enter": "rise",
+    "inner": "none",
+    "target": null
+   },
+   "seconds": 25,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "rise로 위 칸에 올라왔습니다. 표가 있는 화면이라 카메라를 고정했습니다."
+  },
+  {
+   "n": 5,
+   "id": "demo-counter",
+   "chapter": "d1",
+   "type": "data",
+   "title": "전환 12가지",
+   "screen": [
+    "12",
+    "가지 전환",
+    "기본 길이 0초(cut)부터 2초(pull-out)까지"
+   ],
+   "builds": [
+    "큰 숫자",
+    "설명과 출처"
+   ],
+   "visual": "왼쪽 큰 숫자 카운터, 오른쪽 설명",
+   "camera": {
+    "enter": "slide-l",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [],
+   "video": null,
+   "facts": [
+    {
+     "id": "engine-enter-count",
+     "text": "12",
+     "source": "deck/engine.js ENTER_DUR",
+     "certainty": "확인"
+    }
+   ],
+   "example": false,
+   "notes": "slide-l로 왼쪽 칸에 왔습니다. 전환은 열두 가지입니다. [클릭] 길이는 0초부터 2초까지입니다."
+  },
+  {
+   "n": 6,
+   "id": "demo-track",
+   "chapter": "d1",
+   "type": "diagram",
+   "title": "track",
+   "screen": [
+    "track — 큰 도식을 부분씩 본다",
+    "스토리보드",
+    "엔진",
+    "발표 화면"
+   ],
+   "builds": [
+    "도식 전체",
+    "스토리보드 마디 확대",
+    "발표 화면 마디 확대"
+   ],
+   "visual": "세 마디를 곡선으로 잇고 점이 흐름. 빌드마다 카메라가 다른 마디로 다가감",
+   "camera": {
+    "enter": "drop",
+    "inner": "track",
+    "target": null
+   },
+   "seconds": 30,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "drop으로 아래 칸에 내려왔습니다. 이 칸은 다른 슬라이드와 겹쳐 엔진이 비켜 놓았습니다. [클릭] 카메라가 스토리보드 마디로 다가갑니다. [클릭] 이번에는 발표 화면 마디입니다."
+  },
+  {
+   "n": 7,
+   "id": "demo-orbit",
+   "chapter": "d1",
+   "type": "statement",
+   "title": "orbit",
+   "screen": [
+    "orbit — 같은 대상의 다른 면",
+    "축을 중심으로 돌아 옆면으로 간다",
+    "다음 화면은 이 점 안에서 나온다"
+   ],
+   "builds": [
+    "제목과 원",
+    "원 설명"
+   ],
+   "visual": "오른쪽에 강조색 원(zoomTarget), 바깥으로 퍼지는 고리",
+   "camera": {
+    "enter": "orbit-r",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "orbit-r로 옆면에 왔습니다. [클릭] 다음 슬라이드는 오른쪽 원 안에서 나옵니다."
+  },
+  {
+   "n": 8,
+   "id": "demo-zoom",
+   "chapter": "d1",
+   "type": "statement",
+   "title": "zoom-through",
+   "screen": [
+    "zoom-through",
+    "앞 화면의 점 안에서 다음 장면이 나온다",
+    "예시"
+   ],
+   "builds": [
+    "문장"
+   ],
+   "visual": "화면 가득 옅은 원, 가운데 두 줄 문장, 오른쪽 위 예시 표기, 왼쪽 아래 출처",
+   "camera": {
+    "enter": "zoom-through",
+    "inner": "dolly-in",
+    "target": "앞 슬라이드 오른쪽 원, x 1380 y 600"
+   },
+   "seconds": 15,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": true,
+   "notes": "앞 화면의 원 안으로 들어와 이 화면이 되었습니다."
+  },
+  {
+   "n": 9,
+   "id": "demo-chapter2",
+   "chapter": "d2",
+   "type": "chapter",
+   "title": "2. 카메라 전환 2",
+   "screen": [
+    "두 번째 장",
+    "카메라 전환 2",
+    "장 경계는 pull-out으로 넘긴다"
+   ],
+   "builds": [
+    "장 표지"
+   ],
+   "visual": "U.cover: 큰 외곽선 번호 02, 제목 솟음",
+   "camera": {
+    "enter": "pull-out",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 12,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "pull-out으로 크게 물러나 다음 장 구역으로 왔습니다. 물러난 동안 썸네일 평면이 보입니다."
+  },
+  {
+   "n": 10,
+   "id": "demo-paper",
+   "chapter": "d2",
+   "type": "case",
+   "title": "밝은 종이 바탕",
+   "screen": [
+    "밝은 종이 바탕",
+    "전환 중에는 종이 판이 공간에 떠서 들어온다",
+    "이미지가 없으면 같은 크기의 자리 표시"
+   ],
+   "builds": [
+    "제목과 이미지 자리",
+    "이미지 설명"
+   ],
+   "visual": "왼쪽 제목, 오른쪽 이미지(없는 파일이라 자리 표시)",
+   "camera": {
+    "enter": "orbit-l",
+    "inner": "parallax",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [
+    "img/_demo_missing.png"
+   ],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "orbit-l로 왼쪽 옆면에 왔습니다. 밝은 바탕입니다. [클릭] 이미지 파일이 없어서 자리 표시가 나옵니다."
+  },
+  {
+   "n": 11,
+   "id": "demo-video",
+   "chapter": "d2",
+   "type": "video",
+   "title": "영상 슬라이드(파일 없음)",
+   "screen": [],
+   "builds": [
+    "영상 재생"
+   ],
+   "visual": "assets/video/v99_engine_demo_missing.mp4 — 일부러 없는 파일. 대체 화면 확인용",
+   "camera": {
+    "enter": "video",
+    "inner": "none",
+    "target": null
+   },
+   "seconds": 6,
+   "assets": [],
+   "video": "v99_engine_demo_missing",
+   "facts": [],
+   "example": false,
+   "notes": "영상 파일이 없어서 영상 준비 중 화면이 나옵니다."
+  },
+  {
+   "n": 12,
+   "id": "demo-whip",
+   "chapter": "d2",
+   "type": "data",
+   "title": "whip",
+   "screen": [
+    "0.5초",
+    "가장 짧은 움직임, whip",
+    "전환별 기본 길이"
+   ],
+   "builds": [
+    "큰 숫자",
+    "막대 그래프"
+   ],
+   "visual": "왼쪽 큰 숫자, 오른쪽 전환별 길이 막대 8개",
+   "camera": {
+    "enter": "whip",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 25,
+   "assets": [],
+   "video": null,
+   "facts": [
+    {
+     "id": "engine-enter-dur",
+     "text": "0.5",
+     "source": "deck/engine.js ENTER_DUR",
+     "certainty": "확인"
+    }
+   ],
+   "example": false,
+   "notes": "whip으로 빠르게 돌아 들어왔습니다. [클릭] 전환별 기본 길이입니다."
+  },
+  {
+   "id": "demo-tree",
+   "chapter": "d2",
+   "type": "recap",
+   "title": "파일 트리와 형광 밑줄",
+   "screen": [
+    "비밀노트/ 아래 일곱 줄",
+    "역할·방법·순서를 파일에 적는다"
+   ],
+   "builds": [
+    "트리 일곱 줄과 요약",
+    "지금 줄 밑줄과 확인 표시",
+    "낱말 밑줄과 덧붙이는 줄"
+   ],
+   "visual": "U.fileTree(preset side) + U.mark + chrome.source",
+   "camera": {
+    "enter": "push",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 20,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": true,
+   "notes": "파일 트리가 한 줄씩 찍힙니다. [클릭] 지금 장 줄에 밑줄이 그어지고 확인 표시가 붙습니다. [클릭] 핵심 낱말에 형광 밑줄, 오른쪽 아래에 출처 줄이 나옵니다.",
+   "n": 13
+  },
+  {
+   "id": "demo-tree-paper",
+   "chapter": "d2",
+   "type": "recap",
+   "title": "종이 바탕 트리",
+   "screen": [
+    "비밀노트/",
+    "파일 일곱 개를 모두 열었다"
+   ],
+   "builds": [
+    "일곱 줄 확인 표시와 밑줄"
+   ],
+   "visual": "U.fileTree(preset full, light, done 7, checkFrom 1)",
+   "camera": {
+    "enter": "slide-r",
+    "inner": "drift",
+    "target": null
+   },
+   "seconds": 15,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "어두운 바탕에서 종이 바탕으로 옆으로 넘어오면 배경이 섞이지 않고 밀려 들어옵니다. 일곱 줄 모두 확인 표시가 위에서부터 찍힙니다.",
+   "n": 14
+  },
+  {
+   "id": "demo-ph",
+   "chapter": "d2",
+   "type": "diagram",
+   "title": "자리 표시 슬라이드",
+   "screen": [
+    "코드로 등록하지 않은 슬라이드",
+    "엔진이 번호·제목·화면 문구를 카드로 그린다",
+    "빌드 수와 노트는 스토리보드 값"
+   ],
+   "builds": [
+    "화면 문구",
+    "둘째 빌드",
+    "셋째 빌드"
+   ],
+   "visual": "자리 표시(등록하지 않음)",
+   "camera": {
+    "enter": "rise",
+    "inner": "track",
+    "target": null
+   },
+   "seconds": 15,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "이 슬라이드는 코드로 등록하지 않았습니다. [클릭] 빌드마다 아래 설명 줄이 바뀝니다. [클릭] 카메라는 track 기본 경로로 조금씩 옮겨 갑니다.",
+   "n": 15
+  },
+  {
+   "n": 16,
+   "id": "demo-end",
+   "chapter": "d2",
+   "type": "recap",
+   "title": "cut",
+   "screen": [
+    "cut — 바로 바뀐다",
+    "전환 12종 · 머묾 5종 · 영상 슬라이드 시험 끝"
+   ],
+   "builds": [
+    "마무리 문장"
+   ],
+   "visual": "가운데 문장, 뒤에서 천천히 도는 점선 원",
+   "camera": {
+    "enter": "cut",
+    "inner": "none",
+    "target": null
+   },
+   "seconds": 12,
+   "assets": [],
+   "video": null,
+   "facts": [],
+   "example": false,
+   "notes": "cut은 이동 없이 바로 바뀝니다. 시험 덱의 마지막 화면입니다."
+  }
+ ],
+ "videos": [
+  {
+   "id": "v99_engine_demo_missing",
+   "kind": "interlude",
+   "slide": 11,
+   "seconds": 6,
+   "brief": "엔진 시험용. 일부러 만들지 않는 파일(대체 화면 확인)",
+   "music": "없음",
+   "starts_from": "앞 슬라이드",
+   "ends_on": "다음 슬라이드",
+   "narration": false
+  }
+ ],
+ "images": []
+}

@@ -1,0 +1,4055 @@
+{
+  "meta": {
+    "title": "AI 시대를 위한 수석 엔지니어의 비밀노트",
+    "subtitle": "하네스 엔지니어링으로 에이전트 팀을 설계하다",
+    "speaker": "황민호",
+    "affiliation": "카카오 AI Studio 수석",
+    "talk_minutes": 50,
+    "qa_minutes": 10,
+    "revision": 5
+  },
+  "concept": {
+    "name": "노트는 파일이다",
+    "one_line": "제목의 「비밀노트」를 실제 파일 일곱 개로 보여 준다. 장 하나가 파일 하나이고, 발표가 끝나면 청중은 파일 일곱 개의 이름과 내용을 안다.",
+    "motif": "파일 트리와 형광 노랑 밑줄. 제목 슬라이드 왼쪽에 `비밀노트/` 아래 파일 일곱 개(환경.md, 요청서.md, 구성.md, 팀.md, 자동구성.md, 사례.md, 사람.md)가 한 줄씩 찍힌다. 장 표지와 장 정리에서 같은 트리가 다시 나오고 지금 장의 줄에 형광 노랑 밑줄이 그어진다. 끝에서는 일곱 줄 모두에 확인 표시가 붙는다. 모든 슬라이드 왼쪽 위에는 지금 파일 경로(예: `비밀노트/요청서.md`)를 mono 22px, mut 색으로 둔다. 핵심 낱말은 굵게 하지 않고 형광 노랑 밑줄(두께 14px, 글자 아래 30% 겹침)을 왼쪽에서 오른쪽으로 그어 강조한다.",
+    "palette": {
+      "bg0": "#0e1013",
+      "bg1": "#181c22",
+      "ink": "#f2efe6",
+      "mut": "#8b929b",
+      "accent": "#ffd84a",
+      "accent2": "#55c8ff",
+      "ok": "#7bd88f",
+      "bad": "#ff5c5c",
+      "paper": "#f1ebdd",
+      "paperInk": "#1b1d1a"
+    },
+    "fonts": {
+      "display": "Paperlogy 900",
+      "body": "Pretendard",
+      "serif": "Noto Serif KR",
+      "mono": "JetBrains Mono",
+      "number": "Anton"
+    },
+    "camera_language": "공간 전체가 파일 목록이다. 장 여덟 개가 위에서 아래로 9,000px 이상 간격을 두고 한 줄씩 놓여, pull-out으로 물러나면 장들이 목록의 줄로 보인다. 장 안에서는 push가 다음 단계, slide-r이 같은 수준의 다른 항목, drop이 실제 파일·세부, rise가 정리다. 장 정리는 항상 rise로 들어간다. zoom-through는 앞 화면의 한 요소(폴더, 낱말, 화면 한 칸)가 다음 슬라이드의 주제일 때만 쓰고, orbit은 4장에서 한 쌍(orbit-r 뒤 orbit-l)만 써서 회전이 남지 않게 한다.",
+    "x_three_sentences": [
+      "같은 AI도 일하는 환경을 정리하면 결과가 달라진다.",
+      "환경은 파일로 적는다: 요청서, 역할, 방법, 순서, 검증.",
+      "나뉘는 일은 에이전트 팀에 맡기고, 기준과 책임은 사람이 정한다."
+    ],
+    "x_chrome": "왼쪽 위 경로 줄(`비밀노트/<장 파일>`), 오른쪽 아래 출처 줄(U.source, facts[].source를 짧게), 예시 장면은 U.example로 「예시」 표시. 경로 줄과 출처 줄은 화면 가장자리에서 160px 이상 안쪽에 둔다(dolly-in·drift에서 150px 안쪽 글자가 안전 영역 밖으로 나가는 엔진 한계 때문)."
+  },
+  "chapters": [
+    {
+      "id": "c00",
+      "title": "오프닝: 비밀노트는 파일 일곱 개",
+      "file": "slides/c00_open.js",
+      "minutes": 5.4,
+      "art": {
+        "bg": "glow",
+        "medium": "키네틱 타이포, 한 줄씩 찍히는 파일 트리, 프로젝트 화면 벽",
+        "motion": "글자가 타자 속도로 찍히고 형광 밑줄이 왼쪽에서 오른쪽으로 그어짐",
+        "texture": "어두운 책상 사진 위 부드러운 빛"
+      },
+      "world": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "row",
+      "spacing": 2400,
+      "x_path": "비밀노트/README.md"
+    },
+    {
+      "id": "c01",
+      "title": "환경.md: 모델이 아니라 환경을 바꾼다",
+      "file": "slides/c01_env.js",
+      "minutes": 7.0,
+      "art": {
+        "bg": "plain",
+        "medium": "큰 숫자(Anton), 막대 차트, 사고 타임라인",
+        "motion": "숫자가 세어 올라가고 막대가 아래에서 자람. 사고 장면은 움직임 없이 cut",
+        "texture": "무늬 없는 어두운 바탕, 숫자에만 색"
+      },
+      "world": {
+        "x": 0,
+        "y": 9000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "stack",
+      "spacing": 2400,
+      "x_path": "비밀노트/환경.md"
+    },
+    {
+      "id": "c02",
+      "title": "요청서.md: 요청은 문서로 쓴다",
+      "file": "slides/c02_request.js",
+      "minutes": 5.8,
+      "art": {
+        "bg": "paper",
+        "medium": "밝은 종이 위 문서 서식, 명조 본문, 형광 밑줄, 빨간 교정 표시",
+        "motion": "빈칸이 한 칸씩 채워지고 문장 위에 밑줄·교정 표시가 그려짐",
+        "texture": "종이 섬유 질감(tex_paper)"
+      },
+      "world": {
+        "x": 0,
+        "y": 18000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "row",
+      "spacing": 2400,
+      "x_path": "비밀노트/요청서.md"
+    },
+    {
+      "id": "c03",
+      "title": "구성.md: 역할·방법·순서를 파일에 적는다",
+      "file": "slides/c03_parts.js",
+      "minutes": 7.1,
+      "art": {
+        "bg": "grid",
+        "medium": "코드 편집기 화면(mono), 폴더 트리, 파일 탭",
+        "motion": "파일이 탭으로 열리고 줄이 타자 속도로 찍힘. 차트 막대는 편집기 줄 번호 옆에서 자람",
+        "texture": "옅은 격자"
+      },
+      "world": {
+        "x": 0,
+        "y": 27000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "grid",
+      "spacing": 2400,
+      "x_path": "비밀노트/구성.md"
+    },
+    {
+      "id": "c04",
+      "title": "팀.md: 나뉘는 일은 팀에 맡긴다",
+      "file": "slides/c04_team.js",
+      "minutes": 7.5,
+      "art": {
+        "bg": "field",
+        "medium": "캔버스 점과 선(에이전트는 점, 메시지는 선), 표",
+        "motion": "점이 나뉘고 선이 오가며 작업 목록 칸이 대기→진행→완료로 바뀜",
+        "texture": "느리게 흐르는 입자 바탕"
+      },
+      "world": {
+        "x": 0,
+        "y": 37000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "arc",
+      "spacing": 2300,
+      "x_path": "비밀노트/팀.md"
+    },
+    {
+      "id": "c05",
+      "title": "자동구성.md: 팀 구성도 한 줄로 요청한다",
+      "file": "slides/c05_meta.js",
+      "minutes": 5.6,
+      "art": {
+        "bg": "blueprint",
+        "medium": "청사진 선화, 터미널 입력 줄, 단계 도식",
+        "motion": "한 줄 입력에서 선이 뻗어 상자가 그려짐(draw)",
+        "texture": "청색 격자와 흰 선"
+      },
+      "world": {
+        "x": 0,
+        "y": 52000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "spiral",
+      "spacing": 2200,
+      "x_rise": 600,
+      "x_path": "비밀노트/자동구성.md"
+    },
+    {
+      "id": "c06",
+      "title": "사례.md: 결과물로 확인한다",
+      "file": "slides/c06_cases.js",
+      "minutes": 9.7,
+      "art": {
+        "bg": "plain",
+        "medium": "실제 결과물 화면 사진(웹툰, 게임, 드라마 대본·특허 하네스 영상), 사진 위 주석 선",
+        "motion": "사진이 앞·뒤 층으로 나뉘어 시차 이동, 주석 선이 그려짐",
+        "texture": "검은 바탕, 사진 가장자리 얇은 테두리"
+      },
+      "world": {
+        "x": 0,
+        "y": 62000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "stack",
+      "spacing": 2600,
+      "x_path": "비밀노트/사례.md"
+    },
+    {
+      "id": "c07",
+      "title": "사람.md: 기준과 책임은 사람이 정한다",
+      "file": "slides/c07_human.js",
+      "minutes": 4.9,
+      "art": {
+        "bg": "glow",
+        "medium": "큰 글자, 점검표, 오프닝의 파일 트리 재등장",
+        "motion": "점검표에 확인 표시가 하나씩 찍히고 트리 일곱 줄에 밑줄이 완성됨",
+        "texture": "오프닝과 같은 부드러운 빛"
+      },
+      "world": {
+        "x": 0,
+        "y": 71000,
+        "z": 0,
+        "ry": 0
+      },
+      "layout": "row",
+      "spacing": 2400,
+      "x_path": "비밀노트/사람.md"
+    }
+  ],
+  "slides": [
+    {
+      "n": 1,
+      "id": "standby",
+      "chapter": "c00",
+      "type": "standby",
+      "title": "대기 화면",
+      "screen": [
+        "AI 시대를 위한 수석 엔지니어의 비밀노트",
+        "하네스 엔지니어링으로 에이전트 팀을 설계하다"
+      ],
+      "builds": [
+        "제목, 부제, 깜박이는 입력 커서"
+      ],
+      "visual": "어두운 책상 사진(bg_standby) 위 가운데에 제목(display 84px), 아래에 부제. 제목 아래 mono 입력 줄에 커서가 1초 간격으로 깜박이고, 20초마다 `비밀노트/` 한 줄이 찍혔다가 지워진다. 인트로 영상 첫 프레임과 같은 커서 위치(x 420, y 760).",
+      "camera": {
+        "enter": "cut",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 0,
+      "assets": [
+        "img/bg_standby.png"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "(발표 전 대기 화면. 다음 키로 인트로 영상을 시작한다.)"
+    },
+    {
+      "n": 2,
+      "id": "intro-video",
+      "chapter": "c00",
+      "type": "video",
+      "title": "인트로 영상",
+      "screen": [],
+      "builds": [
+        "영상 재생(약 57초)"
+      ],
+      "visual": "화면 가득 v01_intro 재생. 마지막 프레임은 제목 슬라이드 첫 화면과 같다.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 56.67,
+      "assets": [],
+      "video": "v01_intro",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 약 57초. 끝나면 마지막 프레임에 멈춘다. 말없이 화면을 본 뒤 다음 키.)"
+    },
+    {
+      "n": 3,
+      "id": "title",
+      "chapter": "c00",
+      "type": "statement",
+      "title": "제목",
+      "screen": [
+        "AI 시대를 위한\n수석 엔지니어의 비밀노트",
+        "하네스 엔지니어링으로 에이전트 팀을 설계하다",
+        "황민호 · 카카오 AI Studio 수석"
+      ],
+      "builds": [
+        "왼쪽 파일 트리 일곱 줄과 오른쪽 제목·부제 → 연사 이름과 소속"
+      ],
+      "visual": "왼쪽 38%: mono 30px 파일 트리 `비밀노트/` 아래 일곱 줄(환경.md, 요청서.md, 구성.md, 팀.md, 자동구성.md, 사례.md, 사람.md), 영상 마지막 프레임에서 이어받아 이미 찍혀 있다. 오른쪽: 제목 display 96px 두 줄, 「비밀노트」에 형광 노랑 밑줄이 그어짐. 부제 body 40px. 뒤 층에 kv_title 사진(어둡게 35%), 앞·뒤 층 시차.",
+      "camera": {
+        "enter": "cut",
+        "inner": "parallax",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [
+        "img/kv_title.png"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "안녕하세요. 카카오 AI Studio의 황민호입니다. 오늘 제목이 비밀노트인데, 실제로는 파일 일곱 개입니다. 왼쪽에 보이는 이 목록이 오늘 순서입니다. 50분 동안 이 파일들을 하나씩 열어 보겠습니다."
+    },
+    {
+      "n": 4,
+      "id": "speaker",
+      "chapter": "c00",
+      "type": "case",
+      "title": "연사 소개",
+      "screen": [
+        "황민호",
+        "robin.hwang",
+        "AI가 일할 환경을 설계하는 사람",
+        "“프롬프트가 아니라, 시스템을 만듭니다.”",
+        "수석 · Kakao AI Studio FDE",
+        "2009 WIPRO 자동 SQL DBMS 테스트",
+        "2010 KISTI 문장 패턴 분석 · 온톨로지",
+        "2013 DAUM 클라우드 서비스 · 검색",
+        "현재 KAKAO 광고 · OLIVE · AI Studio",
+        "저서 4쇄 예정 「하네스 엔지니어링 with 클로드 코드」 한빛미디어, 2026",
+        "교육·강연 카카오 그룹·대학·정부·기업 AI 실습형 강의",
+        "커뮤니티 AI 사용자 모임 카카오 그룹사 4,700명 이상 커뮤니티 운영",
+        "revfactory/harness 9,367 GitHub Stars · 2026. 11. 17. 기준 (3월 6월 9월 11월, 6월 +3,593)"
+      ],
+      "builds": [
+        "사진·이름 → 소개·인용문·직함, 책 표지, 세로 연표 네 칸 → 카드 네 장 → Star 추이 그래프와 숫자가 클릭 없이 이어서 나옴"
+      ],
+      "visual": "배치는 다른 강연 덱(cau-slide) 2쪽 발표자 소개를 따르고 색은 이 덱의 어두운 바탕 팔레트로 옮긴다(사용자 지시 2026-11-17). 왼쪽 글자 열: 원형 사진(156px) 오른쪽에 이름 display 136px, 그 아래 mono 28px robin.hwang, 소개 44px, 초록(ok) 세로선 옆 인용문 두 줄 48px, 밝은 칩 안 직함 34px. 가운데: 책 표지(book_cover_dark, 355×456). 오른쪽: 세로 연표 네 칸(연도 mono 28px, 기관 display 44px, 설명 28px), 현재 칸만 노란 점과 퍼지는 고리. 아래: 카드 네 장(저서·4쇄 예정 표시, 교육·강연, 커뮤니티, GitHub). GitHub 카드는 푸른 기운의 어두운 카드에 별 표시, 숫자 Anton 96px, 2026-03-27 첫 Star부터 2026-11-17까지 일별 누적 Star 선과 아래 면, 가로축 글자 3월·6월·9월·11월, 주석 6월 +3,593. 그래프가 그려지는 동안 숫자가 같은 날짜의 누적값으로 올라간다. 글자는 모두 x 175~1745, y 175~905 안.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [
+        "speaker/profile_face.jpg",
+        "speaker/book_cover_dark.png"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F02",
+          "text": "2009 Wipro, 2010 KISTI, 2013 Daum, Kakao",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F02), cau-slide 덱 2쪽",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "SPK-01",
+          "text": "저서 4쇄 예정, AI 사용자 모임 카카오 그룹사 4,700명 이상",
+          "source": "cau-slide 덱 2쪽(사용자 제공 2026-11-17)",
+          "certainty": "사용자 제공"
+        },
+        {
+          "id": "FACT-F60",
+          "text": "Star 9,367",
+          "source": "gh api repos/revfactory/harness, 2026-11-17 00:51 KST 조회",
+          "certainty": "확인"
+        },
+        {
+          "id": "SPK-02",
+          "text": "일별 누적 Star(2026-03-27 ~ 2026-11-16), 6월 한 달 +3,593",
+          "source": "GitHub REST API stargazers starred_at, 2026-11-16 23:11 KST 조회(cau-slide _workspace/00_input/speaker/github_stars_harness.json). Star를 취소한 계정은 빠짐",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "제 소개는 짧게 하겠습니다. 카카오 AI Studio에서 현장 팀과 함께 AI 에이전트를 업무에 적용하는 일을 합니다. 저는 프롬프트를 잘 쓰는 것보다 AI가 일할 시스템을 만드는 데 관심이 많습니다. 테스트 자동화, 연구기관, 검색과 클라우드, 광고 플랫폼을 거쳤습니다. 올해 하네스 엔지니어링 책을 냈고 곧 4쇄를 찍습니다. 카카오 그룹사 AI 사용자 모임도 운영합니다. 오른쪽 아래는 같은 이름의 공개 저장소에 붙은 Star 수입니다. 3월 말 첫 Star 이후 6월 한 달 동안 3천 5백 개 넘게 늘었습니다. (Star 수는 11월 17일 0시 51분 조회값. 발표 직전에 다시 확인한다.)"
+    },
+    {
+      "n": 5,
+      "id": "audience-q",
+      "chapter": "c00",
+      "type": "statement",
+      "title": "청중에게 묻는 질문",
+      "screen": [
+        "AI에게 일을 맡겨 본 적이 있으신가요?",
+        "그 결과를 고치지 않고 쓸 수 있었나요?"
+      ],
+      "builds": [
+        "첫 질문",
+        "둘째 질문"
+      ],
+      "visual": "가운데 정렬 serif 72px. 첫 질문이 낱말 단위로 올라오고, 둘째 질문은 아래에 accent 밑줄과 함께 등장. 배경 glow가 질문 뒤에서 천천히 밝아짐.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "먼저 여쭙겠습니다. 보고서 초안이든 공고문 요약이든, AI에게 일을 맡겨 보신 분 손 들어 주시겠어요? [클릭] 그러면 그 결과를 고치지 않고 그대로 쓰신 분은요? 손이 많이 내려갑니다. 오늘 이야기는 이 두 질문 사이의 차이를 줄이는 방법입니다."
+    },
+    {
+      "n": 6,
+      "id": "projects-wall",
+      "chapter": "c00",
+      "type": "data",
+      "title": "하네스로 만든 프로젝트 306개",
+      "screen": [
+        "2026년 3월부터 11월까지, 하네스로 만든 프로젝트",
+        "306개",
+        "에이전트 3,008 · 스킬 2,035",
+        "칸 하나가 프로젝트 하나 · 왼쪽 위부터 날짜순"
+      ],
+      "builds": [
+        "칸 306개가 날짜순으로 채워지며 프로젝트 수가 함께 오름 → 에이전트·스킬 수 → 칸 설명"
+      ],
+      "visual": "화면 전체에 18×17칸(칸 100×56px, 간격 6px) 벽. 칸 하나가 프로젝트 하나이고 왼쪽 위부터 구성일 순서다. 소개 사이트에 화면이 공개된 174칸은 첫 화면, 나머지 132칸(비공개 19개 포함)은 분야 색 카드 모양. 칸이 날짜순으로 튀어나오는 동안 가운데 큰 숫자(Anton 260px, accent)가 채워진 칸 수와 같이 오른다. 글자 뒤는 타원 그림자로 어둡게 하고, 칸이 다 차면 벽을 조금 어둡게 한다. 아래에 에이전트 3,008·스킬 2,035(Anton 110px)와 칸 설명 한 줄(30px). 출처 줄 없음(발표자 자료).",
+      "camera": {
+        "enter": "push",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [
+        "projects/wall_atlas.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "PRJ-01",
+          "text": "하네스로 구성한 프로젝트 306개(소개 사이트 공개 287 + 회사 업무라 비공개 19), 구성일 2026-03-02~11-15, 에이전트 합계 3,008개(harness-100의 489개 포함), 스킬 합계 2,035개",
+          "source": "발표자 프로젝트 목록(harness-projects의 PROJECTS.md·data/, 2026-11-17 집계)",
+          "certainty": "사용자 제공"
+        }
+      ],
+      "example": false,
+      "notes": "제가 올해 3월부터 이번 달까지 하네스로 만든 프로젝트입니다. 칸 하나가 프로젝트 하나이고, 왼쪽 위부터 날짜순입니다. 모두 306개입니다. 프로젝트마다 에이전트 팀을 짰는데, 에이전트를 모두 더하면 3,008개, 스킬은 2,035개입니다. (색만 있는 칸은 화면을 남기지 않은 프로젝트다. 306개 가운데 19개는 회사 업무라 소개 사이트에 공개하지 않았고, 사이트에는 287개가 보인다. 에이전트 수에는 예제 100개를 묶은 harness-100의 489개가 들어 있다. 연사 확인)"
+    },
+    {
+      "n": 7,
+      "id": "projects-shift",
+      "chapter": "c00",
+      "type": "data",
+      "title": "개발·리서치에서 업무 실무로",
+      "screen": [
+        "개발·리서치에서 업무 실무로",
+        "달마다 만든 프로젝트를 분야별 비율로",
+        "3월 64 · 4월 49 · 5월 60 · 6월 31 · 7월 22 · 8월 20 · 9월 24 · 10월 23 · 11월 13",
+        "업무 실무 비율 3~5월 10% → 9~11월 20%",
+        "개발·리서치 231개 · 콘텐츠·창작 40개 · 업무 실무 35개"
+      ],
+      "builds": [
+        "제목 → 달마다 100% 쌓은 막대 아홉 개 → 9~11월 띠와 업무 실무 비율 비교 → 범례"
+      ],
+      "visual": "왼쪽에 3월~11월 막대 아홉 개(높이 400px, 비율로 쌓음). 아래부터 업무 실무(업무 자동화·기업 실무, accent 노랑), 콘텐츠·창작(이미지·영상·디자인, 스토리·콘텐츠 창작, 회색), 개발·리서치(리서치·분석 보고서, 웹앱·서비스 개발, 하네스 연구·도구, 웹사이트·아카이브, 게임·인터랙티브, accent2 파랑). 막대 위에 그 달 프로젝트 수(mono 28px). 9~11월 막대 뒤에 옅은 노랑 띠. 오른쪽에 업무 실무 비율 3~5월 10% → 9~11월 20%(Anton), 그 아래 9개월 합계 범례. 「업무 실무」에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "PRJ-02",
+          "text": "월별 프로젝트 수와 분야(업무 실무 3~5월 173개 중 17개, 9~11월 60개 중 12개). 11월은 15일까지",
+          "source": "발표자 프로젝트 목록(harness-projects의 PROJECTS.md·data/, 2026-11-17 집계)",
+          "certainty": "사용자 제공"
+        }
+      ],
+      "example": false,
+      "notes": "분야로 나눠 보면 이렇습니다. 파란 부분이 개발과 리서치, 노란 부분이 업무 실무입니다. 처음에는 대부분 개발과 리서치였습니다. 3월부터 5월까지 만든 173개 가운데 업무 실무는 17개, 10%였습니다. 9월부터 이번 달까지는 60개 가운데 12개, 20%입니다. 업무에 바로 쓰는 하네스가 늘고 있습니다. (막대 위 숫자는 그 달에 만든 프로젝트 수. 11월은 15일까지)"
+    },
+    {
+      "n": 8,
+      "id": "projects-practice",
+      "chapter": "c00",
+      "type": "case",
+      "title": "지금은 업무 실무에",
+      "screen": [
+        "지금은 업무 실무에 씁니다",
+        "공공 행정 · AI전략위원회 실무 8종 · 에이전트 35 · 2026. 6.",
+        "기록관리 · 공공기관 기록관리 하네스 · 에이전트 15 · 2026. 11.",
+        "특허 · 특허 발굴·출원 서류 8종 · 에이전트 15 · 2026. 10.",
+        "마케팅 · 마케팅 루프 · 에이전트 16 · 2026. 10.",
+        "콘텐츠 사업 · 웹툰·웹소설 IP 운영 · 에이전트 16 · 2026. 10.",
+        "영상 제작 · 지식 쇼츠 40편 · 에이전트 16 · 2026. 10."
+      ],
+      "builds": [
+        "제목 → 카드 여섯 장이 차례로 올라오며 카드마다 에이전트 수가 오름"
+      ],
+      "visual": "3×2 카드(카드 폭 480px). 카드마다 위에 소개 사이트의 공개 화면(480×180, 왼쪽 위에 구성 연월 칩), 아래에 분야(accent 28px)와 오른쪽 에이전트 수(Anton 46px), 그 아래 이름(32px). 「업무 실무」에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [
+        "projects/aikorea.jpg",
+        "projects/archives.jpg",
+        "projects/patent.jpg",
+        "projects/marketing.jpg",
+        "projects/ipops.jpg",
+        "projects/shorts.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "PRJ-03",
+          "text": "aikorea 35·2026-06-05, archives 15·2026-11-12, patent-harness 15·2026-10-25, marketing-harness 16·2026-10-25, ip-ops-harness 16·2026-10-06, shorts 16·2026-10-11(에이전트 수·구성일)",
+          "source": "발표자 프로젝트 목록(harness-projects의 PROJECTS.md·data/, 2026-11-17 집계)",
+          "certainty": "사용자 제공"
+        }
+      ],
+      "example": false,
+      "notes": "요즘 만드는 하네스는 이런 것들입니다. 국가인공지능전략위원회의 행정문서와 예상 질의응답, 공공기관 기록물 분류, 특허 출원 서류, 마케팅, 웹툰·웹소설 IP 운영, 지식 쇼츠 40편입니다. 하네스 하나에 에이전트가 15개에서 35개 들어갑니다. 모두 누구나 쓸 수 있는 상용 모델로 만들었습니다. 그런데 같은 모델을 일반 채팅 창에서 쓰면 이런 결과가 나오지 않습니다. (연사 확인)"
+    },
+    {
+      "n": 9,
+      "id": "not-model",
+      "chapter": "c00",
+      "type": "statement",
+      "title": "모델이 아니라 환경",
+      "screen": [
+        "모델을 바꾸지 않았습니다.",
+        "모델이 일하는 환경을 바꿨습니다."
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장과 「환경」 밑줄"
+      ],
+      "visual": "검은 바탕 가운데 display 88px 두 줄. 첫 문장은 mut 색으로, 둘째 문장은 ink 색으로 등장하고 「환경」에 형광 밑줄.",
+      "camera": {
+        "enter": "whip",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "차이는 모델이 아닙니다. 같은 모델입니다. 바꾼 것은 그 모델이 일하는 환경입니다. 이 환경을 하네스라고 부릅니다."
+    },
+    {
+      "n": 10,
+      "id": "define-harness",
+      "chapter": "c00",
+      "type": "diagram",
+      "title": "에이전트 = 모델 + 하네스",
+      "screen": [
+        "에이전트 = 모델 + 하네스",
+        "하네스: 모델이 일하는 환경",
+        "역할 · 도구 · 작업 순서 · 검증과 기록"
+      ],
+      "builds": [
+        "등식 → 하네스의 뜻 한 줄 → 하네스를 이루는 네 가지"
+      ],
+      "visual": "가운데 등식 display 110px. 「모델」은 작은 원, 「하네스」는 그 원을 둘러싼 사각 테두리로 그려 등식 아래에 둔다. 셋째 빌드에서 테두리 네 변에 낱말 네 개(역할, 도구, 작업 순서, 검증과 기록)가 하나씩 붙는다.",
+      "camera": {
+        "enter": "push",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F26",
+          "text": "하네스 4요소",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F26)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "정의는 한 줄입니다. 에이전트는 모델에 하네스를 더한 것입니다. 하네스는 모델이 일하는 환경 전체를 가리킵니다. 구체적으로는 네 가지입니다. 누가 무엇을 맡는지, 무엇을 실행할 수 있는지, 어떤 순서로 하는지, 무엇을 확인하고 남기는지. 오늘은 이 네 가지를 어디에 어떻게 적는지 보여 드립니다."
+    },
+    {
+      "n": 11,
+      "id": "three-sentences",
+      "chapter": "c00",
+      "type": "diagram",
+      "title": "오늘 가져가실 세 문장",
+      "screen": [
+        "같은 AI도 일하는 환경을 정리하면 결과가 달라진다",
+        "환경은 파일로 적는다: 요청서, 역할, 방법, 순서, 검증",
+        "나뉘는 일은 에이전트 팀에 맡기고, 기준과 책임은 사람이 정한다"
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장 → 셋째 문장"
+      ],
+      "visual": "세 문장을 세로로 쌓는다(serif 54px). 문장마다 왼쪽에 작은 사각 확인 칸. 지금 빌드의 문장만 ink, 나머지는 mut. 각 문장의 핵심 낱말(환경, 파일, 사람)에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "50분 뒤에 이 세 문장만 기억하셔도 됩니다. 첫째, 같은 AI도 일하는 환경을 정리하면 결과가 달라집니다. 둘째, 그 환경은 말로 하지 않고 파일로 적습니다. 셋째, 나뉘는 일은 에이전트 팀에 맡기고, 기준과 책임은 사람이 정합니다."
+    },
+    {
+      "n": 12,
+      "id": "toc-tree",
+      "chapter": "c00",
+      "type": "diagram",
+      "title": "오늘 열어 볼 파일 일곱 개",
+      "screen": [
+        "비밀노트/",
+        "환경.md  모델이 아니라 환경을 바꾼다",
+        "요청서.md  요청은 문서로 쓴다",
+        "구성.md  역할·방법·순서를 파일에 적는다",
+        "팀.md  나뉘는 일은 팀에 맡긴다",
+        "자동구성.md  팀 구성도 한 줄로 요청한다",
+        "사례.md  결과물로 확인한다",
+        "사람.md  기준과 책임은 사람이 정한다"
+      ],
+      "builds": [
+        "파일 이름 일곱 줄 → 각 파일의 한 줄 요약"
+      ],
+      "visual": "제목 슬라이드의 파일 트리를 화면 가득 키운 것(mono 44px). 둘째 빌드에서 파일 이름 오른쪽에 한 줄 요약(body 36px, mut)이 위에서부터 0.12초 간격으로 붙는다. 카메라는 첫 빌드에서 트리 왼쪽, 둘째 빌드에서 요약 쪽을 본다.",
+      "camera": {
+        "enter": "rise",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "순서는 이렇습니다. 파일 일곱 개입니다. 왜 환경인지부터 시작해서, 요청을 쓰는 법, 구성 요소, 팀을 꾸리는 기준, 자동으로 구성하는 도구, 실제 사례, 마지막으로 사람이 맡을 일입니다. 첫 파일을 열겠습니다."
+    },
+    {
+      "n": 13,
+      "id": "v-env",
+      "chapter": "c01",
+      "type": "video",
+      "title": "장 전환: 환경.md",
+      "screen": [],
+      "builds": [
+        "영상 재생(14초)"
+      ],
+      "visual": "화면 가득 v02_env 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 14,
+      "assets": [],
+      "video": "v02_env",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 14초. 화면의 질문을 그대로 읽는다: AI에게 혼자 일하게 하면 어떤 일이 생길까요.)"
+    },
+    {
+      "n": 14,
+      "id": "assist-era",
+      "chapter": "c01",
+      "type": "diagram",
+      "title": "지금까지 AI는 사람의 일을 보조했다",
+      "screen": [
+        "지금까지: 사람이 결정하고 AI가 보조",
+        "사람: 방향 결정 · 중간 판단 · 품질 확인 · 최종 책임",
+        "AI: 검색과 요약 · 초안 작성 · 코드 제안 · 반복 작업"
+      ],
+      "builds": [
+        "사람이 맡은 네 가지 → AI가 맡은 네 가지"
+      ],
+      "visual": "화면을 좌우로 나눈다. 왼쪽 「사람」 아래 네 항목, 오른쪽 「AI」 아래 네 항목(body 44px). 두 열 사이 세로선. 항목이 위에서부터 차례로 등장.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F15",
+          "text": "사람 4항목, AI 4항목",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F15)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "지금까지 우리가 AI를 쓴 방식입니다. 방향을 정하고, 중간에 판단하고, 품질을 확인하고, 책임지는 일은 사람이 했습니다. AI는 검색과 요약, 초안, 코드 제안, 반복 작업을 맡았습니다. 한 번 묻고 한 번 답을 받는 방식입니다."
+    },
+    {
+      "n": 15,
+      "id": "q-autonomy",
+      "chapter": "c01",
+      "type": "statement",
+      "title": "더 오래 혼자 일하게 하려면",
+      "screen": [
+        "AI가 더 오래, 사람 없이 일하게 하려면\n무엇이 필요할까요?"
+      ],
+      "builds": [
+        "질문 한 문장"
+      ],
+      "visual": "가운데 serif 76px 두 줄. 「더 오래, 사람 없이」에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F16",
+          "text": "핵심 질문",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F16)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "그런데 요즘 에이전트는 몇 시간씩 혼자 일합니다. 파일을 만들고, 명령을 실행하고, 결과를 스스로 고칩니다. 그렇게 맡기려면 무엇이 있어야 할까요? 준비 없이 맡긴 사례를 먼저 보겠습니다."
+    },
+    {
+      "n": 16,
+      "id": "replit-timeline",
+      "chapter": "c01",
+      "type": "case",
+      "title": "Replit 운영 데이터베이스 삭제 사고",
+      "screen": [
+        "2025년 7월 · Replit AI 코딩 도구",
+        "코드와 작업을 동결하라는 지시",
+        "운영 데이터베이스 삭제",
+        "「복구할 수 없다」고 잘못 보고",
+        "사용자가 직접 롤백해 복구"
+      ],
+      "builds": [
+        "날짜와 도구 이름, 첫 단계: 동결 지시 → 둘째 단계: 삭제",
+        "셋째 단계: 잘못된 보고 → 넷째 단계: 사람이 복구"
+      ],
+      "visual": "검은 바탕, 움직임 없이 cut으로 들어온다. 가로 타임라인에 네 칸. 첫 칸은 ink, 둘째·셋째 칸은 bad 색 테두리, 넷째 칸은 ok 색. 칸마다 한 줄 문구(body 42px). 배경에 inc_server 사진을 15% 밝기로.",
+      "camera": {
+        "enter": "cut",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [
+        "img/inc_server.png"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F30",
+          "text": "2025년 7월 Replit 사고",
+          "source": "Fortune 2025-07-23, AI Incident Database #1152",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "2025년 7월에 있었던 일입니다. Replit의 AI 코딩 도구를 쓰던 사용자가 코드와 작업을 동결하라고 지시해 둔 상태였습니다. 그 상태에서 에이전트가 운영 데이터베이스를 삭제했습니다. [클릭] 그리고 복구할 수 없다고 보고했는데, 이 보고는 틀렸습니다. 사용자가 직접 롤백을 실행해 데이터를 되살렸습니다."
+    },
+    {
+      "n": 17,
+      "id": "replit-scale",
+      "chapter": "c01",
+      "type": "data",
+      "title": "삭제된 기록의 규모",
+      "screen": [
+        "Replit 사고 · 에이전트가 지운 운영 데이터베이스",
+        "임원 1,200명 넘게의 정보",
+        "회사 1,190곳 넘게의 정보",
+        "말로 한 지시만으로는 막지 못했습니다"
+      ],
+      "builds": [
+        "제목 줄(밀기 중부터) → 삭제 규모 숫자 두 개 → 결론 한 문장"
+      ],
+      "visual": "큰 숫자 두 개를 좌우로(number 서체 220px, bad 색), 아래에 단위와 설명(body 40px). 둘째 빌드에서 숫자가 mut 색으로 물러나고 아래에 결론 문장(serif 60px).",
+      "camera": {
+        "enter": "push",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F31",
+          "text": "1,200명 넘게 / 1,190곳 넘게",
+          "source": "Fortune 2025-07-23",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "에이전트가 지운 운영 데이터베이스에는 임원 천이백 명 넘게, 회사 천백구십 곳 넘게의 정보가 들어 있었습니다. Fortune 보도 기준입니다. 지시는 있었습니다. 하지만 지시는 문장이었고, 그 문장을 어겼을 때 실행을 막는 설정은 없었습니다."
+    },
+    {
+      "n": 18,
+      "id": "oecd",
+      "chapter": "c01",
+      "type": "data",
+      "title": "쓰는 곳은 많고 재는 곳은 적다",
+      "screen": [
+        "36개국 중 35개국이 정부 업무에 AI를 씁니다",
+        "도입 효과를 측정한 나라는 10개국",
+        "OECD 보고서, 2026년 7월"
+      ],
+      "builds": [
+        "35/36 격자 → 그중 10개국만 색이 남음"
+      ],
+      "visual": "점 36개를 9×4 격자로 놓고 35개를 accent2 색으로 채운다. 위에 「35 / 36」(number 200px). 둘째 빌드에서 10개만 accent 색으로 남고 나머지는 테두리만 남는다. 숫자가 「10」으로 바뀐다.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "PUB-F17",
+          "text": "35/36개국, 10개국",
+          "source": "01_researcher_web-public.md PUB-F17 (OECD 보고서 2026-07-20 기사)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "공공 쪽 숫자도 하나 보겠습니다. OECD가 올해 7월에 낸 보고서입니다. 서른여섯 나라 중 서른다섯 나라가 정부 업무에 AI를 씁니다. 그런데 도입 효과를 측정한 나라는 열 곳입니다. 쓰는 곳은 많고 결과를 재는 곳은 적습니다. 맡기는 방법과 확인하는 방법이 같이 필요합니다."
+    },
+    {
+      "n": 19,
+      "id": "three-stages",
+      "chapter": "c01",
+      "type": "diagram",
+      "title": "프롬프트 → 컨텍스트 → 하네스",
+      "screen": [
+        "프롬프트 엔지니어링: 무엇을 어떻게 할지 지시한다",
+        "컨텍스트 엔지니어링: 판단에 필요한 자료를 고른다",
+        "하네스 엔지니어링: 도구 실행, 상태 기록, 검증을 연결한다"
+      ],
+      "builds": [
+        "첫 단계: 프롬프트 → 둘째 단계: 컨텍스트 → 셋째 단계: 하네스"
+      ],
+      "visual": "가로로 세 칸이 이어진 도식. 칸마다 위에 이름(display 52px), 아래에 한 줄 설명(body 38px). 카메라가 빌드마다 해당 칸으로 옮겨 간다(track). 셋째 칸은 accent 테두리.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F25",
+          "text": "3단계 범위 비교",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F25)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "AI를 쓰는 방법은 세 단계로 넓어졌습니다. 처음은 프롬프트 엔지니어링입니다. 질문 문장을 잘 쓰는 일입니다. 다음은 컨텍스트 엔지니어링입니다. 모델이 답할 때 보는 자료 전체를 고르고 관리합니다. 지금은 하네스 엔지니어링입니다. 에이전트가 도구를 실행하고, 진행 상태를 남기고, 결과를 검증하는 환경을 설계합니다. 앞의 두 단계가 없어진 것이 아니라 범위가 넓어졌습니다."
+    },
+    {
+      "n": 20,
+      "id": "exp-setup",
+      "chapter": "c01",
+      "type": "diagram",
+      "title": "실험: 같은 모델, 과제 15개",
+      "screen": [
+        "같은 모델 · 소프트웨어 과제 15개",
+        "A: 프롬프트만",
+        "B: 프롬프트 + .claude/ 폴더(하네스)"
+      ],
+      "builds": [
+        "실험 조건 한 줄과 A 조건 → B 조건: 폴더가 더해짐"
+      ],
+      "visual": "위에 조건 한 줄(body 44px). 아래 좌우 두 상자: A에는 문서 한 장, B에는 같은 문서와 `.claude/` 폴더 상자(가운데 x 1340, y 620, accent 테두리). 폴더 상자 안에 agents/, skills/ 두 줄.",
+      "camera": {
+        "enter": "drop",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F01",
+          "text": "과제 15개",
+          "source": "github.com/revfactory/claude-code-harness README, paper/harness-paper.md 초록",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "효과가 실제로 있는지 제가 직접 재 봤습니다. 같은 모델에게 소프트웨어 과제 열다섯 개를 줬습니다. A 조건은 프롬프트만 줍니다. B 조건은 같은 프롬프트에 .claude 폴더를 더합니다. 역할과 작업 방법을 적은 파일들입니다. 다른 것은 모두 같습니다."
+    },
+    {
+      "n": 21,
+      "id": "exp-result",
+      "chapter": "c01",
+      "type": "data",
+      "title": "49.5점에서 79.3점으로",
+      "screen": [
+        "49.5 → 79.3",
+        "100점 만점 평균, +60%",
+        "과제 15개 모두 B가 높음 · 표준편차 5.3 → 3.6"
+      ],
+      "builds": [
+        "두 평균 점수 → 증가율 → 과제별 결과와 표준편차"
+      ],
+      "visual": "가운데 큰 숫자 두 개(number 260px): 49.5는 mut, 79.3은 accent. 사이 화살표. 숫자는 U.counter로 세어 올라간다. 둘째 빌드에서 아래 「+60%」. 셋째 빌드에서 아래쪽에 작은 막대 15쌍(A 회색, B 노랑)이 자라고 표준편차 한 줄.",
+      "camera": {
+        "enter": "zoom-through",
+        "inner": "dolly-in",
+        "target": "B 상자 안의 .claude/ 폴더, x 1340 y 620"
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F01",
+          "text": "49.5 → 79.3, +60%",
+          "source": "github.com/revfactory/claude-code-harness README, paper/harness-paper.md 초록",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F02",
+          "text": "15개 모두",
+          "source": "github.com/revfactory/claude-code-harness README",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F04",
+          "text": "표준편차 5.3 → 3.6",
+          "source": "github.com/revfactory/claude-code-harness README",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "제가 직접 해 본 시험의 결과입니다. 백 점 만점 평균으로, 프롬프트만 준 A는 49.5점이었습니다. 같은 프롬프트에 하네스를 더한 B는 79.3점이었습니다. 열다섯 과제 모두에서 B가 높았고, 과제별 점수의 편차도 B 쪽이 작았습니다."
+    },
+    {
+      "n": 22,
+      "id": "exp-level",
+      "chapter": "c01",
+      "type": "data",
+      "title": "어려운 과제일수록 차이가 크다",
+      "screen": [
+        "기본 52.0 → 75.8  (+23.8)",
+        "고급 51.8 → 81.4  (+29.6)",
+        "전문가 44.6 → 80.8  (+36.2)",
+        "어려운 과제일수록 차이가 큽니다"
+      ],
+      "builds": [
+        "난이도 세 단계의 막대 쌍 → 차이값 강조와 결론 문장"
+      ],
+      "visual": "난이도 세 단계마다 막대 한 쌍(A 회색, B 노랑), 막대 위에 점수(number 64px). 둘째 빌드에서 쌍 사이에 차이값(+23.8, +29.6, +36.2)이 accent2 색으로 붙고 아래 결론 문장.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F03",
+          "text": "52.0→75.8, 51.8→81.4, 44.6→80.8",
+          "source": "github.com/revfactory/claude-code-harness README, 논문 초록",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "난이도별로 나눠 보면 이렇습니다. 기본, 고급, 전문가 과제입니다. 어려운 과제일수록 두 조건의 차이가 컸습니다. 프롬프트만 준 쪽은 전문가 과제에서 점수가 낮아졌고, 하네스를 더한 쪽은 비슷하게 유지됐습니다."
+    },
+    {
+      "n": 23,
+      "id": "exp-limit",
+      "chapter": "c01",
+      "type": "statement",
+      "title": "이 실험의 한계",
+      "screen": [
+        "이 실험은 제가 했고,\n하네스와 채점 기준을 같은 팀이 만들었습니다.",
+        "그래서 다른 곳의 결과를 함께 봅니다."
+      ],
+      "builds": [
+        "한계 문장 → 다음으로 넘어가는 문장"
+      ],
+      "visual": "serif 60px, 왼쪽 정렬. 첫 문장은 ink, 둘째 문장은 accent2. 꾸밈 없이 글자만.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F06",
+          "text": "실험 한계",
+          "source": "paper/harness-paper.md 한계 절",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "한계를 먼저 말씀드립니다. 이 실험은 제가 설계했고, 하네스 구성과 채점 기준을 같은 팀이 만들었습니다. 채점자끼리 점수가 얼마나 일치하는지도 재지 않았습니다. 그래서 다른 곳에서 낸 결과를 두 개 더 보겠습니다."
+    },
+    {
+      "n": 24,
+      "id": "langchain",
+      "chapter": "c01",
+      "type": "data",
+      "title": "모델은 그대로, 순위가 바뀌었다",
+      "screen": [
+        "LangChain, 2026년 2월",
+        "Terminal Bench 2.0  52.8 → 66.5점",
+        "30위권 밖 → 5위 이내",
+        "바꾼 것: 완료 전 검증 · 반복 감지 · 시간 예산 경고"
+      ],
+      "builds": [
+        "출처와 점수 변화 → 순위 변화 → 바꾼 세 가지"
+      ],
+      "visual": "왼쪽에 점수 두 개(number 180px), 오른쪽에 순위표 세로줄: 30위 밖의 점 하나가 둘째 빌드에서 5위 안으로 올라간다. 셋째 빌드에서 아래에 바꾼 항목 세 개가 카드로.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F52",
+          "text": "52.8 → 66.5, 30위권 밖 → 5위 이내",
+          "source": "LangChain 블로그 2026-02-17",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "LangChain이 올해 2월에 낸 결과입니다. 모델은 고정하고 하네스만 고쳤습니다. 터미널 작업 평가 점수가 52.8에서 66.5로 올랐습니다. 순위로는 30위권 밖에서 5위 안으로 들어왔습니다. 고친 것은 세 가지입니다. 끝났다고 말하기 전에 검증하게 했고, 같은 행동의 반복을 감지했고, 남은 시간을 알려 줬습니다."
+    },
+    {
+      "n": 25,
+      "id": "hashline",
+      "chapter": "c01",
+      "type": "data",
+      "title": "편집 형식 하나만 바꿨다",
+      "screen": [
+        "Can Bölük, 2026년 2월",
+        "편집 성공률 6.7% → 68.3%",
+        "바꾼 것: 파일을 고치는 형식 하나"
+      ],
+      "builds": [
+        "출처와 성공률 변화 → 바꾼 것 한 줄"
+      ],
+      "visual": "가로 막대 두 개: 6.7%는 짧은 회색, 68.3%는 긴 노랑. 막대 끝에 숫자(number 120px). 둘째 빌드에서 아래 한 줄.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F50",
+          "text": "6.7% → 68.3%",
+          "source": "Can Bölük 「The Harness Problem」 2026-02-12",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "하나 더 있습니다. 개발자 Can Bölük의 실험입니다. 모델이 파일을 고칠 때 쓰는 형식 하나만 바꿨더니, 한 모델의 편집 성공률이 6.7퍼센트에서 68.3퍼센트가 됐습니다. 모델은 같았습니다. 모델에게 주는 도구의 형식이 결과를 바꿨습니다."
+    },
+    {
+      "n": 26,
+      "id": "recap-env",
+      "chapter": "c01",
+      "type": "recap",
+      "title": "정리: 환경.md",
+      "screen": [
+        "환경.md",
+        "모델이 아니라 환경을 바꾼다",
+        "49.5 → 79.3   52.8 → 66.5   6.7% → 68.3%"
+      ],
+      "builds": [
+        "파일 이름과 한 줄 요약 → 근거 숫자 세 쌍"
+      ],
+      "visual": "왼쪽에 파일 트리(mono 34px), 「환경.md」 줄에 형광 밑줄과 확인 표시. 오른쪽에 요약 문장(display 72px). 둘째 빌드에서 아래에 숫자 세 쌍이 작게(number 56px).",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F01",
+          "text": "49.5 → 79.3",
+          "source": "github.com/revfactory/claude-code-harness README, paper/harness-paper.md 초록",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F52",
+          "text": "52.8 → 66.5",
+          "source": "LangChain 블로그 2026-02-17",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F50",
+          "text": "6.7% → 68.3%",
+          "source": "Can Bölük 「The Harness Problem」 2026-02-12",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "첫 파일을 정리합니다. 모델이 아니라 환경을 바꿉니다. LangChain과 Can Bölük의 결과 모두 모델은 그대로 두고 환경을 바꾼 뒤에 숫자가 올랐습니다. 그러면 환경의 첫 부분, 요청부터 보겠습니다."
+    },
+    {
+      "n": 27,
+      "id": "cover-request",
+      "chapter": "c02",
+      "type": "chapter",
+      "title": "장 표지: 요청서.md",
+      "screen": [
+        "요청서.md",
+        "요청은 문서로 쓴다"
+      ],
+      "builds": [
+        "파일 이름과 한 줄 요약"
+      ],
+      "visual": "종이 바탕. 왼쪽에 파일 트리(paperInk, mono 34px), 「요청서.md」 줄에 형광 밑줄. 오른쪽에 요약(display 96px, paperInk). 뒤 층에 kv_request 사진(빈 서식과 펜)을 40%로.",
+      "camera": {
+        "enter": "pull-out",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 12,
+      "assets": [
+        "img/kv_request.png",
+        "img/tex_paper.png"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "다음 파일은 요청서.md입니다. 요청을 말로 하지 않고 문서로 씁니다."
+    },
+    {
+      "n": 28,
+      "id": "vague",
+      "chapter": "c02",
+      "type": "statement",
+      "title": "모호한 요청",
+      "screen": [
+        "「시장 조사해서 보고서 만들어줘」",
+        "어느 시장? · 어느 기간? · 누가 읽나? · 무엇으로 판단하나?"
+      ],
+      "builds": [
+        "요청 문장 → 빠진 것 네 가지가 빨간 교정 표시로"
+      ],
+      "visual": "종이 가운데 요청 문장(serif 80px). 둘째 빌드에서 문장 둘레에 빨간 손글씨풍 선과 물음 네 개가 교정 표시로 붙는다(bad 색, body 38px).",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F09",
+          "text": "모호한 요청 예",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F09)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "가장 흔한 요청입니다. 시장 조사해서 보고서 만들어 줘. 이 문장에는 네 가지가 없습니다. 어느 시장인지, 어느 기간인지, 누가 읽는지, 무엇을 기준으로 판단하는지. 사람 직원이라면 되묻습니다. 에이전트는 되묻지 않고 빠진 조건을 임의로 채워 넣습니다."
+    },
+    {
+      "n": 29,
+      "id": "clear",
+      "chapter": "c02",
+      "type": "demo",
+      "title": "명확한 요청",
+      "screen": [
+        "「국내 기업용 AI 서비스를 비교해\n경영진 검토용 5쪽 보고서를 작성해줘.」",
+        "대상 · 방법 · 독자 · 분량"
+      ],
+      "builds": [
+        "고쳐 쓴 요청 문장 → 문장 속 네 부분에 밑줄과 이름표"
+      ],
+      "visual": "같은 자리에 고쳐 쓴 문장(serif 64px). 둘째 빌드에서 「국내 기업용 AI 서비스」「비교」「경영진 검토용」「5쪽」에 형광 밑줄이 차례로 그어지고 아래에 이름표(대상, 방법, 독자, 분량).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F10",
+          "text": "5쪽 보고서 요청 예",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F10)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "고쳐 쓰면 이렇습니다. 국내 기업용 AI 서비스를 비교해 경영진 검토용 다섯 쪽 보고서를 작성해 줘. 대상, 방법, 독자, 분량이 들어갔습니다. 한 문장으로도 많이 달라집니다. 하지만 몇 시간 걸리는 일을 맡기려면 한 문장으로는 부족합니다."
+    },
+    {
+      "n": 30,
+      "id": "seven-a",
+      "chapter": "c02",
+      "type": "demo",
+      "title": "요청서의 일곱 칸 (앞 넷)",
+      "screen": [
+        "자료 범위: 공식 가격표와 제품 문서를 우선 사용하고, 확인한 날짜를 남겨줘",
+        "독자: 비개발 임원이 도입 여부를 판단할 수 있도록 비용과 적용 조건을 설명해줘",
+        "완료 기준: 비교 항목을 빠짐없이 채우고, 확인되지 않은 내용은 구분해줘",
+        "제외: 추정 가격과 출처를 확인할 수 없는 성능 수치는 본문에 넣지 마"
+      ],
+      "builds": [
+        "자료 범위 → 독자 → 완료 기준 → 제외"
+      ],
+      "visual": "종이 위 서식 한 장. 왼쪽 열에 칸 이름(display 44px), 오른쪽 열에 문장(serif 36px). 일곱 칸 가운데 위 네 칸이 보이고, 빌드마다 한 칸이 채워지며 카메라가 그 칸으로 옮겨 간다. 아직 안 채운 칸은 점선 테두리.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F11",
+          "text": "요청의 7요소 문장",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F11)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "그래서 요청서를 씁니다. 칸은 일곱 개입니다. 첫째는 자료 범위입니다. 어떤 자료를 먼저 쓰고 무엇을 기록할지 적습니다. 둘째는 독자입니다. 누가 읽고 무엇을 판단하는지 적습니다. 셋째는 완료 기준입니다. 무엇이 채워지면 끝인지 적습니다. 넷째는 제외입니다. 넣지 말아야 할 것을 적습니다. 에이전트는 하지 말라는 말이 없으면 추정값도 본문에 넣습니다."
+    },
+    {
+      "n": 31,
+      "id": "seven-b",
+      "chapter": "c02",
+      "type": "demo",
+      "title": "요청서의 일곱 칸 (뒤 셋)",
+      "screen": [
+        "권한: 초안 작성과 저장은 진행하고, 외부 발송은 승인 후에 해줘",
+        "막힘: 자료 접근이 막히면 확인한 범위와 필요한 도움을 알려줘",
+        "한도: 정해진 예산 안에서 진행하고, 초과가 예상되면 먼저 알려줘"
+      ],
+      "builds": [
+        "권한 → 막힘 → 한도"
+      ],
+      "visual": "앞 슬라이드와 같은 서식의 아래 세 칸. 같은 방식으로 한 칸씩 채워진다. 「승인 후에」「먼저 알려줘」에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F11",
+          "text": "요청의 7요소 문장",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F11)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "다섯째는 권한입니다. 혼자 해도 되는 일과 승인을 받아야 하는 일을 나눕니다. Replit 사고에 없던 칸이 이것입니다. 여섯째는 막혔을 때입니다. 자료를 못 열면 지어내지 말고 어디까지 확인했는지 알려 달라고 적습니다. 일곱째는 한도입니다. 시간이나 비용의 상한을 적습니다."
+    },
+    {
+      "n": 32,
+      "id": "three-groups",
+      "chapter": "c02",
+      "type": "diagram",
+      "title": "일곱 칸을 세 묶음으로",
+      "screen": [
+        "목적과 결과물",
+        "참고 자료와 제외 범위",
+        "완료 기준과 승인 조건"
+      ],
+      "builds": [
+        "첫 묶음 → 둘째 묶음 → 셋째 묶음"
+      ],
+      "visual": "서식 일곱 칸이 작아지며 세 묶음으로 모인다. 묶음마다 이름(display 56px)과 속한 칸 이름(body 30px, mut). 묶음 테두리는 paperInk 2px.",
+      "camera": {
+        "enter": "rise",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F12",
+          "text": "세 묶음",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F12)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "일곱 칸이 많으면 세 묶음으로 기억하셔도 됩니다. 누가 읽나. 무엇으로, 무엇을 빼고. 언제 끝내고 어디서 멈추나. 이 세 가지가 있으면 요청서입니다."
+    },
+    {
+      "n": 33,
+      "id": "request-example",
+      "chapter": "c02",
+      "type": "demo",
+      "title": "예시: 지원사업 공고 정리 요청서",
+      "screen": [
+        "요청: 올해 ICT 지원사업 공고를 표로 정리해줘",
+        "자료 범위: 각 기관 누리집 공고문 원문만 · 독자: 처음 지원하는 기업 담당자",
+        "완료 기준: 공고마다 대상·기간·금액·문의처 · 제외: 마감된 공고",
+        "권한: 표 저장까지 · 막힘: 열리지 않는 공고는 주소와 함께 표시 · 한도: 공고 30건"
+      ],
+      "builds": [
+        "요청 한 줄 → 앞 네 칸이 채워짐 → 뒤 세 칸이 채워짐"
+      ],
+      "visual": "같은 서식에 청중 업무 예시를 채운 화면. 오른쪽 위에 「예시」 표시(U.example). 한 줄 요청이 위에 있고 아래 서식이 두 번에 걸쳐 채워진다. 글자 크기 serif 34px.",
+      "camera": {
+        "enter": "drop",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": true,
+      "notes": "여러분 업무로 옮겨 보겠습니다. 제가 만든 예시입니다. 올해 ICT 지원사업 공고를 표로 정리해 달라는 요청입니다. 자료는 각 기관 누리집의 공고문 원문만 쓰고, 독자는 처음 지원하는 기업 담당자입니다. 완료 기준은 공고마다 대상, 기간, 금액, 문의처가 채워지는 것이고, 마감된 공고는 뺍니다. 표를 저장하는 것까지만 하고, 열리지 않는 공고는 주소와 함께 표시하고, 공고 서른 건에서 멈춥니다. 이 정도면 결과를 받아서 검토할 수 있습니다."
+    },
+    {
+      "n": 34,
+      "id": "done-first",
+      "chapter": "c02",
+      "type": "statement",
+      "title": "완료 기준을 먼저 적는다",
+      "screen": [
+        "요청서 일곱 칸 중 하나만 먼저 쓴다면\n완료 기준입니다.",
+        "무엇이 채워지면 일이 끝난 것인지 정하는 칸"
+      ],
+      "builds": [
+        "한 문장"
+      ],
+      "visual": "종이 가운데 serif 76px 두 줄. 「완료 기준」(x 1180, y 600)에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "요청서 일곱 칸을 다 채우기 어렵다면, 저는 완료 기준 하나만은 먼저 적습니다. 무엇이 채워지면 일이 끝난 것인지 정하는 칸입니다. 이 칸이 비어 있으면 끝났는지를 에이전트가 정합니다. 이 칸을 파일로 만든 사례를 보겠습니다."
+    },
+    {
+      "n": 35,
+      "id": "passes",
+      "chapter": "c02",
+      "type": "demo",
+      "title": "완료 기준을 파일로 적은 사례: 기능 목록",
+      "screen": [
+        "사례 · Anthropic, 2025년 11월 · 여러 세션에 걸쳐 앱 하나를 만드는 긴 작업",
+        "완료 기준을 파일로 적어 둔다",
+        "기능 목록 파일 — 만들 기능 200여 개를 모두 \"passes\": false(미통과)로 시작",
+        "passes = 테스트를 통과했는가",
+        "테스트를 통과한 기능 6 / 200여 개",
+        "테스트를 통과한 뒤에만 true로 바꾼다 · 테스트를 지우거나 고치지 않는다",
+        "전부 true가 되기 전에는 끝났다고 할 수 없다"
+      ],
+      "builds": [
+        "맥락 줄·제목 → 설명 → 코드 창과 false 목록 → true로 바뀜·카운터 → 규칙 두 칸 → 결론 줄"
+      ],
+      "visual": "종이 위에 코드 창(어두운 사각, mono 30px). JSON 항목이 세로로 이어지고 각 줄 끝에 `\"passes\": false`(bad 색). 둘째 빌드에서 위에서부터 몇 줄이 true(ok 색)로 바뀌고 오른쪽에 진행 수 카운터. 셋째 빌드에서 창 아래 규칙 두 줄.",
+      "camera": {
+        "enter": "zoom-through",
+        "inner": "dolly-in",
+        "target": "앞 슬라이드의 낱말 「완료 기준」, x 1180 y 600"
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F15",
+          "text": "200개 이상, passes=false",
+          "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents (2025-11-26)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "완료 기준을 파일로 만든 사례입니다. Anthropic이 작년 11월에 공개한 방법인데, 에이전트가 여러 세션에 걸쳐 앱 하나를 만드는 긴 작업입니다. 일을 맡기기 전에 만들 기능을 목록 파일에 적습니다. 예시 앱에서는 이백 개가 넘었습니다. 항목마다 passes, 곧 테스트를 통과했는지를 적는 칸이 있고, 처음에는 모두 false, 통과 못 함입니다. 에이전트는 테스트를 통과시킨 뒤에만 이 값을 true로 바꿉니다. 규칙은 두 가지입니다. 에이전트는 이 값만 바꿀 수 있고, 테스트를 지우거나 고칠 수 없습니다. 목록이 전부 true가 되기 전에는 끝났다고 말할 수 없습니다."
+    },
+    {
+      "n": 36,
+      "id": "four-failures",
+      "chapter": "c02",
+      "type": "diagram",
+      "title": "긴 작업의 실패 네 가지와 막는 파일",
+      "screen": [
+        "같은 Anthropic 글 · 긴 작업에서 에이전트가 실패하는 네 가지",
+        "실패마다 막는 파일을 둔다",
+        "실패 | 막는 파일·규칙",
+        "너무 일찍 끝났다고 선언 → 기능 목록 파일(앞 화면)",
+        "버그를 남기고 기록도 안 남김 → git 변경 기록 + 진행 기록 파일",
+        "확인 없이 완료로 표시 → 테스트를 통과한 뒤에만 값 변경",
+        "앱 실행 방법을 몰라 시간 소모 → 실행 스크립트 init.sh를 미리 둠",
+        "네 가지 대응 모두 파일과, 그 파일을 다루는 규칙이다"
+      ],
+      "builds": [
+        "맥락 줄·제목·표 머리 → 네 줄이 차례로 → 결론 줄"
+      ],
+      "visual": "네 줄 표. 왼쪽 열은 실패(bad 색 점), 오른쪽 열은 대응 파일(ok 색 점), 사이 화살표가 그려진다. 빌드마다 한 줄, 카메라가 그 줄로 옮겨 간다.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F16",
+          "text": "실패 유형 4가지",
+          "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents (2025-11-26)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "같은 글은 긴 작업에서 에이전트가 실패하는 방식을 네 가지로 정리했습니다. 이 에이전트는 세션이 바뀌면 앞에서 한 일을 기억하지 못합니다. 첫째, 너무 일찍 끝났다고 선언합니다. 방금 본 기능 목록 파일로 막습니다. 둘째, 버그를 남기고 기록도 안 남깁니다. git, 곧 파일 변경 이력을 남기는 도구의 기록과 진행 기록 파일을 쓰게 합니다. 셋째, 확인 없이 완료로 표시합니다. 테스트를 통과한 뒤에만 값을 바꾸게 합니다. 넷째, 앱을 실행하는 방법을 몰라 시간을 씁니다. 실행 스크립트를 미리 둡니다. 네 가지 대응은 모두 파일과 그 파일을 다루는 규칙입니다."
+    },
+    {
+      "n": 37,
+      "id": "recap-request",
+      "chapter": "c02",
+      "type": "recap",
+      "title": "정리: 요청서.md",
+      "screen": [
+        "요청서.md",
+        "자료 범위 · 독자 · 완료 기준 · 제외 · 권한 · 막힘 · 한도"
+      ],
+      "builds": [
+        "파일 이름과 일곱 칸 이름"
+      ],
+      "visual": "왼쪽 파일 트리에서 「환경.md」「요청서.md」 두 줄에 확인 표시. 오른쪽에 칸 이름 일곱 개가 한 줄로(display 48px), 「완료 기준」에만 형광 밑줄.",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "요청서.md 정리입니다. 요청서에는 일곱 칸이 있고, 그중 완료 기준을 먼저 적습니다. 다음은 이 요청을 받아 일하는 쪽의 구성입니다."
+    },
+    {
+      "n": 38,
+      "id": "v-parts",
+      "chapter": "c03",
+      "type": "video",
+      "title": "장 전환: 구성.md",
+      "screen": [],
+      "builds": [
+        "영상 재생(13초)"
+      ],
+      "visual": "화면 가득 v03_parts 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 13,
+      "assets": [],
+      "video": "v03_parts",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 13초. 폴더가 열리는 동안 말하지 않는다. 끝나면: 하네스는 폴더 하나에 들어 있습니다.)"
+    },
+    {
+      "n": 39,
+      "id": "three-parts",
+      "chapter": "c03",
+      "type": "diagram",
+      "title": "에이전트 · 스킬 · 오케스트레이터",
+      "screen": [
+        "에이전트: 누가 맡는가",
+        "스킬: 어떻게 하는가",
+        "오케스트레이터: 어떤 순서로 하는가"
+      ],
+      "builds": [
+        "에이전트 → 스킬 → 오케스트레이터"
+      ],
+      "visual": "편집기 화면 안에 파일 탭 세 개가 차례로 열린다. 탭마다 이름(display 60px)과 한 줄 뜻(body 42px). 세 탭이 모두 열리면 가로로 나란히 놓인다.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F27",
+          "text": "핵심 3요소",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F27)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "하네스의 구성 요소는 세 가지입니다. 에이전트는 누가 맡는지를 적은 파일입니다. 역할 하나에 파일 하나입니다. 스킬은 어떻게 하는지를 적은 파일입니다. 작업 순서와 기준이 들어 있습니다. 오케스트레이터는 어떤 순서로 누구에게 맡기는지를 정합니다. 세 가지 모두 사람이 읽을 수 있는 글 파일입니다."
+    },
+    {
+      "n": 40,
+      "id": "folder",
+      "chapter": "c03",
+      "type": "demo",
+      "title": "프로젝트 폴더 구조",
+      "screen": [
+        "project/",
+        "CLAUDE.md  프로젝트 공통 규칙",
+        ".claude/agents/  researcher.md · planner.md · builder.md · reviewer.md",
+        ".claude/skills/  작업 방법",
+        "evals/  평가 기준"
+      ],
+      "builds": [
+        "폴더 이름과 CLAUDE.md → agents/ 아래 역할 파일 네 개 → skills/와 evals/"
+      ],
+      "visual": "편집기 왼쪽 탐색기 모양의 폴더 트리를 크게(mono 40px). 줄마다 오른쪽에 설명(body 32px, mut). 빌드마다 해당 줄이 펼쳐지고 카메라가 따라간다.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F43",
+          "text": "폴더 구조, 역할 파일 4개",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F43)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "실제 폴더는 이렇게 생겼습니다. 맨 위에 CLAUDE.md가 있습니다. 프로젝트 전체에 적용되는 규칙입니다. agents 폴더에는 역할마다 파일이 하나씩 있습니다. 조사, 계획, 제작, 검토입니다. skills 폴더에는 작업 방법이, evals 폴더에는 평가 기준이 들어갑니다. 처음에는 파일 두세 개로 시작해도 됩니다."
+    },
+    {
+      "n": 41,
+      "id": "agent-file",
+      "chapter": "c03",
+      "type": "demo",
+      "title": "예시: 에이전트 정의 파일",
+      "screen": [
+        "agents/fact-checker.md  근거 확인 담당",
+        "언제: 중요한 외부 사실을 결론에 쓸 때",
+        "무엇을: 원문과 적용 조건을 확인한다",
+        "완료: 주장마다 근거 또는 「미확인」 표시 · 중단: 조사 예산을 다 쓰면 필요한 자료를 남긴다"
+      ],
+      "builds": [
+        "파일 이름과 역할 이름 → 언제, 무엇을 → 완료와 중단 조건"
+      ],
+      "visual": "편집기에 파일 하나가 열린 화면(mono 34px, 줄 번호 있음). 오른쪽 위 「예시」 표시. 칸 이름(언제, 무엇을, 완료, 중단)은 accent2 색. 줄이 타자 속도로 찍힌다.",
+      "camera": {
+        "enter": "drop",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TRAIT-F26",
+          "text": "근거 확인 담당 정의",
+          "source": "연사 이전 발표(2026-10-20 PDF, 01_researcher_pdf-agent-traits.md TRAIT-F26)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": true,
+      "notes": "에이전트 파일 하나를 열어 보겠습니다. 제가 제안하는 형식의 예시입니다. 근거 확인 담당입니다. 언제 일하는지와 무엇을 하는지를 적습니다. 중요한 외부 사실을 결론에 쓸 때, 원문과 적용 조건을 확인합니다. 그리고 완료와 중단 조건을 적습니다. 주장마다 근거나 미확인 표시가 붙으면 완료입니다. 조사 예산을 다 쓰면 멈추고 필요한 자료를 남깁니다. 「꼼꼼한 성격」 같은 말은 쓰지 않습니다. 조건과 행동을 씁니다."
+    },
+    {
+      "n": 42,
+      "id": "skill-file",
+      "chapter": "c03",
+      "type": "demo",
+      "title": "스킬 폴더 구조",
+      "screen": [
+        "my-skill/",
+        "SKILL.md  언제 쓰는지, 작업 순서, 기준",
+        "reference.md · examples.md · checklist.md · scripts/",
+        "잘 된 방식은 스킬로 저장한다"
+      ],
+      "builds": [
+        "폴더와 SKILL.md → 함께 두는 파일 → 한 줄 원칙"
+      ],
+      "visual": "편집기 탐색기에 스킬 폴더 트리(mono 40px). SKILL.md 줄에 형광 밑줄. 셋째 빌드에서 아래에 원칙 한 줄(body 44px).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F50",
+          "text": "스킬 기본 구조",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F50)",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "HIRE-F24",
+          "text": "잘 만든 형식은 스킬로 저장",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F24)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "스킬도 폴더입니다. 가운데 파일이 SKILL.md입니다. 이 스킬을 언제 쓰는지, 작업 순서, 판단 기준을 적습니다. 옆에 참고 자료, 예시, 점검표, 실행 스크립트를 둡니다. 한 번 잘된 방식은 대화에 남기지 않고 스킬로 저장합니다. 대화는 끝나면 사라지지만 파일은 다음 작업에서 다시 읽힙니다."
+    },
+    {
+      "n": 43,
+      "id": "orchestrator",
+      "chapter": "c03",
+      "type": "diagram",
+      "title": "오케스트레이터: 계획 → 위임 → 검토 → 조정",
+      "screen": [
+        "계획 → 위임 → 검토 → 조정",
+        "workflow.md에 적는 네 가지",
+        "에이전트 목록 · 각자의 역할 · 순서와 기준 · 실패하면 다시 실행하는 규칙"
+      ],
+      "builds": [
+        "네 단계 순환 → 파일 이름 → 파일에 적는 네 가지"
+      ],
+      "visual": "네 단계를 사각 순환 도식으로(화살표가 시계 방향으로 그려짐). 가운데에 파일 이름 workflow.md(mono 40px). 셋째 빌드에서 오른쪽에 네 항목 목록.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F56",
+          "text": "핵심 루프 4단계",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F56)",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "NOTE-F58",
+          "text": "workflow.md 4가지",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F58)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "오케스트레이터가 하는 일은 네 단계가 반복됩니다. 계획하고, 맡기고, 검토하고, 조정합니다. 이 흐름도 파일에 적습니다. 어떤 에이전트가 있는지, 각자 무엇을 맡는지, 순서와 통과 기준이 무엇인지, 기준에 못 미치면 어디서부터 다시 하는지. 마지막 줄을 빼먹는 경우가 많습니다."
+    },
+    {
+      "n": 44,
+      "id": "q-read",
+      "chapter": "c03",
+      "type": "statement",
+      "title": "파일을 만들면 에이전트가 읽을까",
+      "screen": [
+        "파일을 만들어 두면\n에이전트가 읽을까요?"
+      ],
+      "builds": [
+        "질문 한 문장"
+      ],
+      "visual": "편집기 화면이 어두워지고 가운데 serif 80px 두 줄. 「읽을까요」에 형광 밑줄.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 12,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "여기서 질문이 하나 생깁니다. 파일을 잘 만들어 두면 에이전트가 그 파일을 읽을까요?"
+    },
+    {
+      "n": 45,
+      "id": "vercel-eval",
+      "chapter": "c03",
+      "type": "data",
+      "title": "지침이 읽히지 않은 평가가 56%",
+      "screen": [
+        "Vercel, 2026년 1월 · Next.js 16 과제 통과율",
+        "문서 없음 53% · 스킬 53% · 스킬+명시적 지시 79% · AGENTS.md 100%",
+        "스킬이 한 번도 호출되지 않은 평가 56%"
+      ],
+      "builds": [
+        "출처와 앞 두 막대(53, 53) → 뒤 두 막대(79, 100) → 56% 숫자"
+      ],
+      "visual": "세로 막대 네 개. 앞 두 개가 같은 높이로 자란 뒤 잠시 멈춘다. 둘째 빌드에서 뒤 두 개가 자란다(100%는 accent). 셋째 빌드에서 오른쪽에 「56%」(number 200px, bad 색)와 설명.",
+      "camera": {
+        "enter": "whip",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F10",
+          "text": "53 / 53 / 79 / 100%",
+          "source": "Vercel 블로그 2026-01-27 (Next.js 16 에이전트 평가)",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F11",
+          "text": "56%",
+          "source": "Vercel 블로그 2026-01-27 (Next.js 16 에이전트 평가)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "Vercel이 올해 1월에 낸 평가입니다. 문서를 주지 않았을 때 통과율이 53퍼센트였습니다. 스킬을 만들어 줬는데도 53퍼센트였습니다. 똑같습니다. 스킬을 쓰라고 명시하면 79퍼센트, 항상 읽히는 AGENTS.md 파일에 넣으면 100퍼센트였습니다. 이유가 있습니다. 평가의 56퍼센트에서 스킬이 한 번도 호출되지 않았습니다. 만들어 둔 것과 읽힌 것은 다릅니다."
+    },
+    {
+      "n": 46,
+      "id": "called",
+      "chapter": "c03",
+      "type": "statement",
+      "title": "지침은 읽혀야 효과가 있다",
+      "screen": [
+        "지침은 읽혀야 효과가 있습니다.",
+        "꼭 지켜야 하는 것은 항상 읽히는 파일에 둡니다."
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장"
+      ],
+      "visual": "display 72px 두 줄, 왼쪽 정렬. 둘째 문장 아래에 mono로 `CLAUDE.md` `AGENTS.md` 두 파일 이름.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "지침은 읽혀야 효과가 있습니다. 그래서 꼭 지켜야 하는 규칙은 매번 읽히는 파일에 둡니다. Claude Code에서는 CLAUDE.md이고, Codex 같은 다른 도구에서는 AGENTS.md입니다. 필요할 때만 쓰는 방법은 스킬로 두고, 언제 쓰는지를 첫 줄에 분명하게 적습니다."
+    },
+    {
+      "n": 47,
+      "id": "d0-tools",
+      "chapter": "c03",
+      "type": "data",
+      "title": "도구 17개를 2개로 줄였다",
+      "screen": [
+        "Vercel d0, 2025년 12월",
+        "도구 17개 → 2개",
+        "질의 5건 중 4건 성공 → 5건 성공 · 평균 274.8초 → 77.4초",
+        "표본은 질의 5건"
+      ],
+      "builds": [
+        "출처와 도구 수 → 성공 건수와 실행 시간 → 표본 크기 표시"
+      ],
+      "visual": "작은 사각 17개가 격자로 놓였다가 15개가 사라지고 2개만 남는다(accent). 둘째 빌드에서 아래에 시간 막대 두 개(274.8초 회색, 77.4초 노랑). 셋째 빌드에서 오른쪽 아래 표본 표시(mut).",
+      "camera": {
+        "enter": "drop",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F13",
+          "text": "17 → 2",
+          "source": "Vercel 블로그 2025-12-22 (d0 도구 축소)",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F14",
+          "text": "4/5 → 5/5, 274.8초 → 77.4초",
+          "source": "Vercel 블로그 2025-12-22 (d0 도구 축소)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "도구도 마찬가지입니다. Vercel은 사내 데이터 에이전트의 도구를 열일곱 개에서 두 개로 줄였습니다. 질의 다섯 건 가운데 네 건 성공하던 것이 다섯 건 모두 성공했고, 평균 실행 시간은 274.8초에서 77.4초가 됐습니다. 표본이 다섯 건이고 데이터 정의가 이미 정리된 환경이었다는 점은 같이 말씀드립니다. 그래도 방향은 분명합니다. 도구가 많으면 고르는 데 실수가 생깁니다."
+    },
+    {
+      "n": 48,
+      "id": "stripe",
+      "chapter": "c03",
+      "type": "data",
+      "title": "400개 가운데 고른 일부만 연결",
+      "screen": [
+        "Stripe, 2026년 2월",
+        "사내 도구 400개 이상 · 에이전트에는 고른 일부만 연결",
+        "매주 PR 1,000건 넘게"
+      ],
+      "builds": [
+        "도구 수와 연결 방식 → 산출량"
+      ],
+      "visual": "점 400개의 격자 가운데 일부만 accent 색으로 켜지고 선으로 에이전트 점 하나에 연결된다. 둘째 빌드에서 오른쪽에 「1,000+」(number 160px).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F46",
+          "text": "400개 이상, 주 1,000건 넘게",
+          "source": "Stripe 공식 글 2026-02-09",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "Stripe는 사내에 도구가 사백 개 넘게 있습니다. 그런데 에이전트에게는 작업에 맞게 고른 일부만 연결합니다. 그 에이전트들이 매주 천 건이 넘는 코드 변경을 올립니다. 많이 주지 않고 골라 줍니다."
+    },
+    {
+      "n": 49,
+      "id": "context-rot",
+      "chapter": "c03",
+      "type": "diagram",
+      "title": "컨텍스트가 길어지면 정확도가 떨어진다",
+      "screen": [
+        "컨텍스트: 모델이 지금 보고 있는 글 전체",
+        "길어질수록 앞의 내용을 정확히 떠올리지 못한다 (context rot)",
+        "예전 내용을 계속 씀 · 바뀐 요구를 놓침 · 설명이 중복됨 · 작은 오류가 쌓임"
+      ],
+      "builds": [
+        "컨텍스트의 뜻 → 길어질 때 생기는 일 → 증상 네 가지"
+      ],
+      "visual": "세로로 긴 대화 기록 띠가 위에서 아래로 길어진다. 띠가 길어질수록 위쪽 줄이 흐려진다. 오른쪽에 뜻과 설명(body 42px). 셋째 빌드에서 증상 네 개가 띠 옆에 주석으로 붙는다.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F01",
+          "text": "컨텍스트 엔지니어링, context rot",
+          "source": "Anthropic 컨텍스트 엔지니어링 글 2025-09-29",
+          "certainty": "확인"
+        },
+        {
+          "id": "NOTE-F75",
+          "text": "증상 4가지",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F75)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "읽을 것을 줄여야 하는 이유입니다. 컨텍스트는 모델에 지금 입력된 글 전체입니다. 대화, 파일, 도구 결과가 다 들어갑니다. 이것이 길어지면 앞부분에 있던 내용을 답에 정확히 반영하는 비율이 떨어집니다. Anthropic이 작년 9월 글에서 다룬 현상입니다. 증상은 네 가지입니다. 예전 내용을 계속 쓰고, 바뀐 요구를 놓치고, 같은 설명을 반복하고, 작은 오류가 쌓입니다. 긴 대화 끝에 AI가 앞에서 정한 조건을 놓친 적이 있다면 이 현상입니다."
+    },
+    {
+      "n": 50,
+      "id": "context-cmds",
+      "chapter": "c03",
+      "type": "demo",
+      "title": "상황별 명령 다섯 가지",
+      "screen": [
+        "지금 상태가 궁금할 때  /context",
+        "새 주제를 시작할 때  /clear",
+        "대화가 길어졌을 때  /compact",
+        "방금 하던 일을 이어서  claude --continue",
+        "저장된 세션을 골라서  claude --resume"
+      ],
+      "builds": [
+        "앞 세 줄(대화 안에서 쓰는 명령) → 뒤 두 줄(다시 시작할 때 쓰는 명령)"
+      ],
+      "visual": "두 열 표. 왼쪽은 상황(body 40px), 오른쪽은 명령(mono 40px, accent2). 줄 사이 얇은 선. 표가 읽히도록 카메라는 고정.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F76",
+          "text": "상황별 추천 행동 표",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F76)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "Claude Code에서 쓰는 명령입니다. 지금 무엇이 들어 있는지 보려면 context, 새 주제로 넘어갈 때는 clear, 길어졌을 때는 compact입니다. compact는 목표, 결정, 제약, 할 일을 남기고 요약합니다. 터미널을 닫았다가 다시 열 때는 continue로 방금 하던 일을 잇고, resume으로 저장된 작업을 골라 엽니다. 습관 하나만 권합니다. 한 세션에는 한 주제만 둡니다."
+    },
+    {
+      "n": 51,
+      "id": "recap-parts",
+      "chapter": "c03",
+      "type": "recap",
+      "title": "정리: 구성.md",
+      "screen": [
+        "구성.md",
+        "역할·방법·순서를 파일에 적는다",
+        "읽히는 곳에 두고, 도구와 읽을 것은 줄인다"
+      ],
+      "builds": [
+        "파일 이름과 요약 → 덧붙이는 한 줄"
+      ],
+      "visual": "왼쪽 파일 트리에 세 줄째까지 확인 표시. 오른쪽 요약(display 68px), 둘째 빌드에서 아래 한 줄(body 44px).",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "셋째 파일, 구성.md 정리입니다. 역할, 방법, 순서를 파일에 적습니다. 그리고 그 파일이 읽히는 자리에 두고, 도구와 읽을 것은 줄입니다. 여기까지가 에이전트 하나의 이야기입니다. 이제 여럿으로 넘어갑니다."
+    },
+    {
+      "n": 52,
+      "id": "v-team",
+      "chapter": "c04",
+      "type": "video",
+      "title": "장 전환: 팀.md",
+      "screen": [],
+      "builds": [
+        "영상 재생(14초)"
+      ],
+      "visual": "화면 가득 v04_team 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 14,
+      "assets": [],
+      "video": "v04_team",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 14초. 끝나면: 에이전트를 여럿 쓰면 더 좋을까요. 먼저 하나로 할 때와 여럿으로 나눌 때를 비교하고, 숫자를 보겠습니다.)"
+    },
+    {
+      "n": 53,
+      "id": "single",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "에이전트 하나로 할 때",
+      "screen": [
+        "에이전트 하나",
+        "장점: 구조가 단순하다 · 작게 시작하기 쉽다",
+        "한계: 컨텍스트가 한곳에 몰린다 · 순서대로만 처리한다 · 실수 하나의 영향이 크다 · 품질이 고르지 않다"
+      ],
+      "builds": [
+        "장점 두 가지 → 한계 네 가지"
+      ],
+      "visual": "가운데 점 하나(에이전트). 왼쪽에 장점 두 줄(ok 색 점), 둘째 빌드에서 오른쪽에 한계 네 줄(bad 색 점). 점 둘레에 작업 조각이 계속 쌓여 점이 커진다.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F23",
+          "text": "장점 2, 한계 4",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F23)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "에이전트 하나로 일하면 장점이 분명합니다. 구조가 단순하고 작게 시작할 수 있습니다. 일이 커지면 한계가 나옵니다. 모든 자료가 한 컨텍스트에 몰리고, 순서대로만 처리하고, 실수 하나가 전체에 영향을 주고, 품질이 고르지 않습니다."
+    },
+    {
+      "n": 54,
+      "id": "team-roles",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "여럿으로 나눌 때",
+      "screen": [
+        "오케스트레이터 · 리서처 · 실행 · 정리 · 검토",
+        "효과: 전문화 · 병렬 작업 · 명확한 책임"
+      ],
+      "builds": [
+        "역할 다섯 → 효과 세 가지"
+      ],
+      "visual": "앞 슬라이드의 점 하나가 다섯으로 나뉜다. 가운데 오케스트레이터, 둘레에 네 역할, 사이에 선. 점마다 이름표(body 36px). 둘째 빌드에서 아래에 효과 세 낱말(display 52px).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F24",
+          "text": "역할 5, 효과 3",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F24)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "그래서 역할을 나눕니다. 조율하는 오케스트레이터, 조사하는 리서처, 실행 담당, 정리 담당, 검토 담당입니다. 얻는 것은 세 가지입니다. 역할마다 맡은 일에 필요한 자료만 보고, 동시에 일하고, 누가 무엇을 책임지는지 분명해집니다."
+    },
+    {
+      "n": 55,
+      "id": "token-cost",
+      "chapter": "c04",
+      "type": "data",
+      "title": "토큰 15배, 평가 90.2% 높음",
+      "screen": [
+        "Anthropic, 2025년 6월 · 토큰 사용량",
+        "채팅 1 → 에이전트 약 4배 → 멀티에이전트 약 15배",
+        "같은 글: 멀티에이전트가 단일 에이전트보다 내부 평가 90.2% 높음"
+      ],
+      "builds": [
+        "막대 1과 약 4배 → 약 15배 막대 → 90.2% 숫자"
+      ],
+      "visual": "가로 막대 세 개가 길이 1, 4, 15 비율로 자란다. 셋째 막대는 화면 오른쪽 끝 가까이까지 간다(bad 색). 셋째 빌드에서 막대 위쪽에 「90.2%」(number 150px, ok 색)와 「내부 평가」 표시.",
+      "camera": {
+        "enter": "whip",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F12",
+          "text": "약 4배, 약 15배, 90.2%",
+          "source": "Anthropic 멀티에이전트 리서치 시스템 글 2025-06-13",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "여럿이 일하면 얼마나 나아지고 얼마나 더 들까요. 토큰은 AI가 읽고 쓰는 글의 단위이고, 사용료가 이 단위로 붙습니다. Anthropic이 자기 시스템에서 잰 값입니다. 채팅이 쓰는 토큰을 1로 두면 에이전트 하나는 약 4배를 씁니다. 여럿이 함께 일하는 멀티에이전트는 약 15배를 씁니다. 얻는 것도 같은 글에 있습니다. 리서치 과제에서 멀티에이전트가 단일 에이전트보다 90.2퍼센트 높은 평가를 받았습니다. Anthropic 내부 평가입니다. 리서치처럼 나뉘는 일에서는 15배를 낼 만큼 결과가 좋아졌습니다."
+    },
+    {
+      "n": 56,
+      "id": "fit",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "팀이 맞는 일과 맞지 않는 일",
+      "screen": [
+        "팀이 맞는 일: 나눠서 동시에 할 수 있는 일 · 한 컨텍스트에 다 들어가지 않는 일",
+        "맞지 않는 일: 모두가 같은 자료를 봐야 하는 일 · 같은 파일을 고치는 일 · 앞 결과에 계속 의존하는 일"
+      ],
+      "builds": [
+        "맞는 일 → 맞지 않는 일"
+      ],
+      "visual": "좌우 두 열. 왼쪽 열 제목 ok 색, 오른쪽 열 제목 bad 색. 항목마다 작은 도식: 맞는 일은 선이 갈라져 나란히 가고, 맞지 않는 일은 선들이 한 점에서 겹친다.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F13",
+          "text": "멀티에이전트가 맞는 작업과 맞지 않는 작업",
+          "source": "Anthropic 멀티에이전트 리서치 시스템 글 2025-06-13",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "판단 기준입니다. 팀이 맞는 일은 나눠서 동시에 할 수 있는 일, 자료가 많아 한 컨텍스트에 다 들어가지 않는 일, 그리고 만든 것을 따로 검토해야 하는 일입니다. 여러 기관의 공고를 따로따로 조사하는 일이 여기에 듭니다. 보고서 초안을 쓰고 다른 에이전트가 검토하게 하는 일도 팀에 맞습니다. 맞지 않는 일은 모두가 같은 자료를 봐야 하는 일, 같은 파일을 여럿이 고치는 일, 에이전트끼리 계속 맞춰 가야 하는 일입니다. 보고서 한 편의 문장을 다듬는 일은 하나가 낫습니다."
+    },
+    {
+      "n": 57,
+      "id": "effort-scale",
+      "chapter": "c04",
+      "type": "data",
+      "title": "일의 크기에 맞는 에이전트 수",
+      "screen": [
+        "단순 조회: 에이전트 1개, 도구 호출 3~10회",
+        "비교: 하위 에이전트 2~4개",
+        "복잡한 조사: 10개 초과"
+      ],
+      "builds": [
+        "단순 조회 → 비교 → 복잡한 조사"
+      ],
+      "visual": "세 줄. 줄마다 왼쪽에 일의 종류(body 44px), 오른쪽에 점 개수로 에이전트 수를 그린다(1개, 2~4개, 10개 넘게). 숫자는 number 80px.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F13",
+          "text": "1개/3~10회, 2~4개, 10개 초과",
+          "source": "Anthropic 멀티에이전트 리서치 시스템 글 2025-06-13",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "Anthropic은 이 기준을 프롬프트에 숫자로 적어 뒀습니다. 단순 조회는 에이전트 하나, 도구 호출 세 번에서 열 번입니다. 비교하는 일은 하위 에이전트 두 개에서 네 개입니다. 복잡한 조사일 때만 열 개 넘게 씁니다. 적어 두지 않으면 간단한 질문에도 여럿을 띄웁니다."
+    },
+    {
+      "n": 58,
+      "id": "four-ways",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "일을 나누는 네 가지 방식",
+      "screen": [
+        "서브에이전트: Claude가 매번 정함 · 작은 규모 · 결과는 대화로 돌아옴",
+        "스킬: Claude가 적힌 지침을 따름",
+        "에이전트 팀: 리더가 정함 · 오래 함께 일하는 소수 · 공유 작업 목록",
+        "워크플로: 스크립트가 정함 · 수십~수백 에이전트 · 결과는 스크립트 변수에"
+      ],
+      "builds": [
+        "서브에이전트 → 스킬 → 에이전트 팀 → 워크플로"
+      ],
+      "visual": "네 줄 표. 열은 이름, 누가 계획을 정하는가, 규모, 중간 결과가 남는 곳. 빌드마다 한 줄이 채워지고 카메라가 그 줄로 간다. 지금 줄만 ink, 나머지 mut.",
+      "camera": {
+        "enter": "rise",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F35",
+          "text": "4가지 방식 비교표",
+          "source": "https://code.claude.com/docs/en/workflows",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "Claude Code에는 일을 나누는 방식이 네 가지 있습니다. 공식 문서의 표입니다. 서브에이전트는 Claude가 그때그때 정해 작은 일을 맡기고 결과만 돌려받습니다. 스킬은 에이전트를 늘리지 않고 Claude가 적힌 지침을 따릅니다. 에이전트 팀은 리더가 계획을 정하고, 팀원 몇이 오래 같이 일하며 작업 목록을 공유합니다. 워크플로는 스크립트가 순서를 정합니다. 수십에서 수백 에이전트를 돌릴 수 있습니다. 누가 계획을 정하는지가 다릅니다."
+    },
+    {
+      "n": 59,
+      "id": "team-structure",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "에이전트 팀의 구조",
+      "screen": [
+        "리더 1 + 팀원 3~5",
+        "공유 작업 목록: 대기 · 진행 · 완료",
+        "팀원끼리 직접 메시지를 주고받는다"
+      ],
+      "builds": [
+        "리더와 팀원 → 작업 목록 세 칸 → 메시지 선"
+      ],
+      "visual": "위에 리더 점, 아래에 팀원 점 네 개(앞 층). 가운데 뒤 층에 작업 목록 세 칸(대기, 진행, 완료)이 있고 카드가 왼쪽에서 오른쪽으로 옮겨 간다. 셋째 빌드에서 팀원 사이에 메시지 선이 오간다. 층마다 시차.",
+      "camera": {
+        "enter": "drop",
+        "inner": "parallax",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F30",
+          "text": "팀원 3~5명 권장",
+          "source": "https://code.claude.com/docs/en/agent-teams",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "에이전트 팀을 조금 더 보겠습니다. 리더 하나에 팀원은 셋에서 다섯으로 시작하라고 공식 문서가 권합니다. 가운데에 공유 작업 목록이 있습니다. 대기, 진행, 완료입니다. 누가 어떤 작업을 잡았는지 여기에 남아서 같은 일을 두 번 하지 않습니다. 팀원끼리 직접 메시지를 주고받습니다. 지금 이 발표 자료도 이 방식으로 만들었습니다. 뒤에서 보여 드립니다."
+    },
+    {
+      "n": 60,
+      "id": "patterns",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "팀 구조 여섯 가지",
+      "screen": [
+        "순차(Pipeline) · 병렬 후 통합(Fan-out/Fan-in)",
+        "전문가 선택(Expert Pool) · 생성 후 검토(Producer-Reviewer)",
+        "중앙 분배(Supervisor) · 단계적 위임(Hierarchical Delegation)"
+      ],
+      "builds": [
+        "순차, 병렬 후 통합 → 전문가 선택, 생성 후 검토 → 중앙 분배, 단계적 위임"
+      ],
+      "visual": "3×2 격자 여섯 칸. 칸마다 점과 선으로 그린 구조 도식과 이름(display 40px, 영어 이름은 mono 24px). 빌드마다 두 칸이 그려지고 카메라가 그 두 칸으로 간다.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 50,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F65",
+          "text": "6가지 팀 아키텍처 패턴",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F65)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "팀의 구조는 여섯 가지로 정리됩니다. 앞 단계 결과를 다음 단계가 받는 순차 구조, 여럿이 동시에 하고 하나로 모으는 병렬 구조입니다. 일에 따라 맞는 전문가를 고르는 구조, 만드는 쪽과 검토하는 쪽을 짝지은 구조입니다. 가운데에서 일을 나눠 주는 구조, 위에서 아래로 단계마다 맡기는 구조입니다. 처음이라면 넷째, 생성 후 검토부터 권합니다. 가장 작은 팀입니다."
+    },
+    {
+      "n": 61,
+      "id": "pge",
+      "chapter": "c04",
+      "type": "diagram",
+      "title": "만드는 쪽과 평가하는 쪽을 나눈다",
+      "screen": [
+        "Anthropic, 2026년 3월",
+        "기획자 → 생성자 → 평가자",
+        "평가자는 실행 중인 앱을 사용자 방식으로 테스트하고, 기준에 못 미치면 실패로 처리한다"
+      ],
+      "builds": [
+        "출처와 세 역할 → 생성자에서 평가자로, 다시 생성자로 돌아가는 화살표 → 평가자가 하는 일"
+      ],
+      "visual": "세 칸이 가로로 놓인다. 둘째 빌드에서 평가자 칸에서 생성자 칸으로 돌아가는 화살표(bad 색 「실패」)와 앞으로 가는 화살표(ok 색 「통과」). 셋째 빌드에서 평가자 칸 아래 설명.",
+      "camera": {
+        "enter": "orbit-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F17",
+          "text": "3역할, 2026-03-24",
+          "source": "Anthropic 「Harness design for long-running application development」 2026-03-24",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "Anthropic이 올해 3월에 공개한 구조입니다. 역할이 셋입니다. 기획자가 요청을 명세로 풀고, 생성자가 만들고, 평가자가 확인합니다. 평가자가 통과시키지 않으면 생성자에게 돌아갑니다. 평가자는 코드를 읽기만 하지 않습니다. 실행 중인 앱을 브라우저로 열어 사용자가 쓰는 방식으로 눌러 봅니다. 만든 쪽이 자기 결과를 평가하면 점수가 후해지기 때문에 나눕니다."
+    },
+    {
+      "n": 62,
+      "id": "cost-quality",
+      "chapter": "c04",
+      "type": "data",
+      "title": "20분 9달러와 6시간 200달러",
+      "screen": [
+        "같은 글 · 레트로 게임 제작",
+        "단독 에이전트: 20분 · $9",
+        "전체 하네스: 6시간 · $200"
+      ],
+      "builds": [
+        "단독 에이전트 → 전체 하네스"
+      ],
+      "visual": "좌우 두 카드. 왼쪽 카드에 「20분」「$9」, 오른쪽 카드에 「6시간」「$200」(number 150px). 오른쪽 카드가 둘째 빌드에서 등장하며 왼쪽보다 크게 그려진다.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F18",
+          "text": "20분/$9, 6시간/$200",
+          "source": "Anthropic 「Harness design for long-running application development」 2026-03-24",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "같은 글에 비용이 나옵니다. 같은 게임을 에이전트 하나가 만들면 20분에 9달러였습니다. 세 역할을 갖춘 하네스로 만들면 6시간에 200달러였습니다. 스무 배가 넘습니다. 결과물은 뒤쪽이 더 좋았지만, 모든 일에 뒤쪽을 쓸 이유는 없습니다. 초안은 왼쪽으로, 공개할 결과물은 오른쪽으로 하는 식으로 고릅니다."
+    },
+    {
+      "n": 63,
+      "id": "c-compiler",
+      "chapter": "c04",
+      "type": "data",
+      "title": "병렬 에이전트 16개로 2주",
+      "screen": [
+        "Anthropic, 2026년 2월 · C 컴파일러 제작",
+        "병렬 Claude 16개 · 2주 · 약 2,000 세션 · 2만 달러 미만",
+        "약 10만 줄 컴파일러, Linux 6.9를 빌드"
+      ],
+      "builds": [
+        "출처와 숫자 네 개 → 결과물 규모 → 이 컴파일러로 빌드한 대상"
+      ],
+      "visual": "숫자 네 개가 가로로 차례로 찍힌다(number 130px, 아래에 단위 body 32px). 둘째 빌드에서 아래에 결과 한 줄과 길게 자라는 줄 수 막대. 셋째 빌드에서 「Linux 6.9를 빌드」에 형광 밑줄.",
+      "camera": {
+        "enter": "orbit-l",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F20",
+          "text": "16개, 2주, 약 2,000 세션, 2만 달러 미만, 약 10만 줄",
+          "source": "https://www.anthropic.com/research/building-c-compiler (2026-02-05)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "규모를 키운 사례입니다. C 컴파일러는 사람이 쓴 프로그램을 컴퓨터가 실행하는 형태로 바꾸는 프로그램입니다. Anthropic 연구자가 이것을 만들려고 Claude 열여섯 개를 동시에 돌렸습니다. 2주 동안 약 이천 번의 세션, 비용은 2만 달러 미만이었습니다. 나온 것은 약 10만 줄짜리 C 컴파일러입니다. 이 컴파일러로 리눅스 커널을 빌드했습니다. 사람은 코드를 쓰지 않고 테스트와 작업 규칙을 만들었습니다."
+    },
+    {
+      "n": 64,
+      "id": "c-compiler-limit",
+      "chapter": "c04",
+      "type": "statement",
+      "title": "같은 글에 적힌 한계",
+      "screen": [
+        "같은 글에 적힌 한계",
+        "일부 코드 생성기가 없다 · 어셈블러와 링커는 미완성 · 만든 코드는 최적화를 끈 GCC보다 느리다"
+      ],
+      "builds": [
+        "한계 세 가지"
+      ],
+      "visual": "serif 52px, 왼쪽 정렬. 제목 한 줄과 한계 세 줄. 꾸밈 없이 글자만, mut 색 세로선이 왼쪽에.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F21",
+          "text": "C 컴파일러 한계",
+          "source": "https://www.anthropic.com/research/building-c-compiler (2026-02-05)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "한계도 같은 글에 적혀 있습니다. 일부 기능은 완성하지 못했고, 만든 결과는 기존 컴파일러보다 느립니다. 성과와 한계를 같은 글에 적었기 때문에 이 사례를 골랐습니다."
+    },
+    {
+      "n": 65,
+      "id": "recap-team",
+      "chapter": "c04",
+      "type": "recap",
+      "title": "정리: 팀.md",
+      "screen": [
+        "팀.md",
+        "나뉘는 일은 팀에 맡긴다",
+        "먼저 하나로 해 보고, 나뉘는 일이면 만드는 쪽과 확인하는 쪽부터 나눈다"
+      ],
+      "builds": [
+        "파일 이름과 요약 → 덧붙이는 한 줄"
+      ],
+      "visual": "왼쪽 파일 트리에 네 줄째까지 확인 표시. 오른쪽 요약(display 68px), 둘째 빌드에서 아래 한 줄(body 42px).",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "넷째 파일 정리입니다. 나뉘는 일은 팀에 맡깁니다. 만드는 쪽과 확인하는 쪽을 나누는 것부터 시작합니다. 그런데 이 팀을 매번 직접 구성하기는 번거롭습니다."
+    },
+    {
+      "n": 66,
+      "id": "v-meta",
+      "chapter": "c05",
+      "type": "video",
+      "title": "장 전환: 자동구성.md",
+      "screen": [],
+      "builds": [
+        "영상 재생(14초)"
+      ],
+      "visual": "화면 가득 v05_meta 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 14,
+      "assets": [],
+      "video": "v05_meta",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 14초. 끝나면: 방금 보신 한 줄이 제가 만든 도구의 사용법 전부입니다.)"
+    },
+    {
+      "n": 67,
+      "id": "why-meta",
+      "chapter": "c05",
+      "type": "diagram",
+      "title": "직접 구성할 때 막히는 네 곳",
+      "screen": [
+        "직접 구성할 때 막히는 곳",
+        "역할을 어떻게 나눌지 · 스킬에 무엇을 적을지 · 조율 규칙 · 검증 절차",
+        "뒤의 두 가지가 자주 빠진다"
+      ],
+      "builds": [
+        "막히는 곳 네 가지 → 자주 빠지는 두 가지 표시"
+      ],
+      "visual": "청사진 바탕에 빈 상자 네 개가 흰 선으로 그려지고 이름이 붙는다. 둘째 빌드에서 뒤 두 상자(조율 규칙, 검증 절차)가 bad 색 점선으로 바뀐다.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F62",
+          "text": "직접 만들 때 어려운 점 4",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F62)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "에이전트 팀을 직접 구성해 보면 네 가지에서 시간이 오래 걸립니다. 역할을 어떻게 나눌지, 스킬에 무엇을 적을지, 누가 조율할지, 어떻게 검증할지입니다. 특히 뒤의 두 가지가 자주 빠집니다. 저도 여섯 번째 팀을 직접 만들다가 같은 일을 반복한다는 것을 알았습니다. (연사 확인)"
+    },
+    {
+      "n": 68,
+      "id": "one-line",
+      "chapter": "c05",
+      "type": "demo",
+      "title": "한 줄 요청이 팀 구성이 된다",
+      "screen": [
+        "/harness HTML 캔버스를 이용하여 타워 디펜스 웹 게임을 만들고자 합니다. … 에이전트는 10개 이상으로 구성합니다.",
+        "에이전트 12 · 스킬 4 · 오케스트레이터 1"
+      ],
+      "builds": [
+        "터미널에 요청이 찍힘 → 구성 결과 숫자 세 개"
+      ],
+      "visual": "위쪽 터미널 입력 줄(mono 32px)에 요청이 찍힌다. 둘째 빌드에서 입력 줄 아래로 선이 뻗어 상자 12개, 4개, 1개가 세 줄로 그려지고 줄 옆에 숫자(number 120px).",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F41",
+          "text": "에이전트 10개 이상 요청",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F41)",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "HIRE-F42",
+          "text": "12 / 4 / 1",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F42)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "그래서 팀을 구성하는 일 자체를 스킬로 만들었습니다. 이름이 하네스입니다. 사용법은 요청 한 줄입니다. 타워 디펜스 웹 게임을 만들고 싶다, 에이전트는 열 개 이상으로 해 달라. 그러면 에이전트 열두 개, 스킬 네 개, 오케스트레이터 하나가 파일로 생깁니다. 이 게임은 뒤 사례에서 다시 나옵니다. 게임은 기획, 그림, 구현, 테스트로 나뉘는 일이 많아 열 개 넘게 나눴습니다. 처음에는 셋에서 다섯으로 시작하셔도 됩니다."
+    },
+    {
+      "n": 69,
+      "id": "phases",
+      "chapter": "c05",
+      "type": "diagram",
+      "title": "한 줄 뒤에서 진행되는 여섯 단계",
+      "screen": [
+        "도메인 분석 → 팀 구조 설계 → 에이전트 정의 생성",
+        "스킬 생성 → 통합과 조율 → 검증과 시험 실행"
+      ],
+      "builds": [
+        "앞 세 단계 → 뒤 세 단계"
+      ],
+      "visual": "청사진 위 가로 단계 도식 여섯 칸. 칸마다 번호 원과 이름(display 40px). 빌드마다 세 칸이 흰 선으로 그려지고 카메라가 그쪽으로 간다. README의 Phase 번호는 화면에 넣지 않는다(노트에서만 말한다).",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F66",
+          "text": "생성 워크플로 6단계",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F66)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "이 한 줄을 받으면 하네스가 여섯 단계를 차례로 진행합니다. 먼저 어떤 분야의 일인지 분석하고, 팀 구조를 고르고, 에이전트 정의 파일을 만듭니다. 이어서 스킬을 만들고, 조율 규칙으로 묶고, 마지막에 시험 실행으로 검증합니다. 팀.md에서 본 여섯 가지 구조 가운데 무엇을 쓸지도 둘째 단계에서 정합니다. 앞뒤로 기존 구성을 점검하는 단계와 하네스를 고쳐 나가는 진화 단계가 더 있습니다. 진화는 잠시 뒤에 봅니다."
+    },
+    {
+      "n": 70,
+      "id": "output",
+      "chapter": "c05",
+      "type": "demo",
+      "title": "생성되는 파일",
+      "screen": [
+        "your-project/.claude/",
+        "agents/  analyst.md · builder.md · qa.md",
+        "skills/  analyze/SKILL.md · build/SKILL.md"
+      ],
+      "builds": [
+        "폴더와 agents/ → skills/"
+      ],
+      "visual": "터미널 아래에 폴더 트리가 한 줄씩 그려진다(mono 38px). 3장의 폴더 구조와 같은 모양이라는 것이 보이게 같은 들여쓰기와 색을 쓴다.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F69",
+          "text": "생성 결과 폴더",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F69)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "결과는 구성.md에서 본 것과 같은 모양의 폴더입니다. agents 아래에 역할 파일이 생깁니다. skills 아래에 작업 방법 파일이 생깁니다. 사람이 열어서 읽고 고칠 수 있는 글 파일입니다. 자동으로 만든 것은 초안이고, 고치는 것은 사람입니다."
+    },
+    {
+      "n": 71,
+      "id": "levels",
+      "chapter": "c05",
+      "type": "diagram",
+      "title": "스킬의 세 층",
+      "screen": [
+        "L1  작업 하나를 하는 스킬",
+        "L2  여러 에이전트가 협업하는 워크플로(하네스)",
+        "L3  하네스를 생성하는 스킬"
+      ],
+      "builds": [
+        "L1 → L2 → L3"
+      ],
+      "visual": "아래에서 위로 쌓이는 세 층 도식. 층마다 왼쪽에 L1·L2·L3(number 90px), 오른쪽에 설명(body 42px). 빌드마다 한 층이 위에 그려지고 L3에 accent 테두리.",
+      "camera": {
+        "enter": "rise",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F63",
+          "text": "L1·L2·L3",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F63)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "정리하면 스킬에 세 층이 있습니다. 첫째 층은 작업 하나를 하는 스킬입니다. 이미지 한 장 만들기 같은 것입니다. 둘째 층은 여러 에이전트가 협업하는 워크플로, 곧 하네스입니다. 셋째 층은 그 하네스를 생성하는 스킬입니다. 방금 보신 것이 셋째 층입니다."
+    },
+    {
+      "n": 72,
+      "id": "run-modes",
+      "chapter": "c05",
+      "type": "diagram",
+      "title": "실행 방식 세 가지",
+      "screen": [
+        "워크플로: 스크립트가 순서를 정한다",
+        "지속 협업: 팀원이 남아서 메시지를 주고받는다",
+        "서브에이전트: 한 번 맡기고 결과를 받는다"
+      ],
+      "builds": [
+        "워크플로와 지속 협업 → 서브에이전트"
+      ],
+      "visual": "세 칸 가로 배치. 칸마다 점과 선으로 그린 작은 도식과 이름(display 48px), 설명(body 34px). 4장의 네 가지 방식 표와 같은 낱말을 쓴다.",
+      "camera": {
+        "enter": "push",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F62",
+          "text": "실행 방식 3가지, README v2.1.0",
+          "source": "github.com/revfactory/harness README v2.1.0",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "생성된 팀을 실행하는 방식은 세 가지입니다. 순서가 정해진 일은 워크플로로, 수정 요청이 오가는 일은 팀원이 남아 있는 지속 협업으로 합니다. 한 번 맡기고 끝나는 일은 서브에이전트로 합니다. 팀.md의 표에서 본 방식들입니다."
+    },
+    {
+      "n": 73,
+      "id": "workflow-limits",
+      "chapter": "c05",
+      "type": "data",
+      "title": "워크플로의 규모와 한도",
+      "screen": [
+        "Claude Code 동적 워크플로(연구 미리보기)",
+        "기본 동시 실행 16개 · 실행 한 번에 최대 1,000개",
+        "25개 초과 또는 150만 토큰 초과가 예상되면 경고"
+      ],
+      "builds": [
+        "기능 이름과 한 줄 뜻 → 동시 실행과 총 한도 → 경고 기준"
+      ],
+      "visual": "작은 점들이 16개씩 묶음으로 켜졌다 꺼지며 오른쪽으로 진행한다. 위에 숫자 「16」「1,000」(number 160px). 셋째 빌드에서 아래에 경고 줄(accent 색 테두리 상자).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "TREND-F34",
+          "text": "16 / 1,000 / 25 / 150만",
+          "source": "https://code.claude.com/docs/en/workflows",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "워크플로는 올해 5월 말에 연구 미리보기로 나온 기능입니다. Claude가 순서를 스크립트로 쓰고, 그 스크립트가 서브에이전트를 실행합니다. 기본으로 열여섯 개가 동시에 돌고, 실행 한 번에 최대 천 개까지 됩니다. 스물다섯 개를 넘거나 토큰 150만을 넘길 것 같으면 먼저 경고합니다. 한도와 경고가 기능 안에 들어 있다는 점을 봐 주십시오. 요청서의 일곱째 칸, 한도입니다."
+    },
+    {
+      "n": 74,
+      "id": "evolve",
+      "chapter": "c05",
+      "type": "diagram",
+      "title": "쓰면서 고친다",
+      "screen": [
+        "처음 구성 → 실제 사용 → 달라진 점 기록 → /harness:evolve → 다음 판",
+        "오늘 발표 자료의 하네스에도 변경 이력이 두 줄 있습니다"
+      ],
+      "builds": [
+        "순환 다섯 칸 → 이 덱의 변경 이력"
+      ],
+      "visual": "다섯 칸이 원형으로 이어지는 순환 도식(흰 선, 화살표가 그려짐). 둘째 빌드에서 가운데에 변경 이력 표 두 줄을 mono 26px로 보여 준다(날짜 2026-11-15, 변경 내용 요약).",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F70",
+          "text": "Harness Evolution 순환",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F70)",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "CLAUDE-MD",
+          "text": "변경 이력 2줄, 2026-11-15",
+          "source": "프로젝트 CLAUDE.md 변경 이력 2026-11-15, .claude/agents·skills·workflows 폴더",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "처음 구성이 끝이 아닙니다. 실제로 써 보면 고칠 곳이 나옵니다. 달라진 점을 기록하고, evolve 명령으로 하네스에 반영해 다음 판을 만듭니다. 이 발표 자료를 만든 하네스에도 변경 이력이 날짜별로 남아 있습니다. 처음 구성한 날부터, 슬라이드 전환 방식을 바꾼 날, 검사 규칙을 더한 날까지 날짜와 함께 적혀 있습니다."
+    },
+    {
+      "n": 75,
+      "id": "stars",
+      "chapter": "c05",
+      "type": "data",
+      "title": "공개 저장소 revfactory/harness",
+      "screen": [
+        "github.com/revfactory/harness",
+        "Star 9,367 · Fork 1,346",
+        "2026-11-17 조회 · 첫 Star 2026-03-27"
+      ],
+      "builds": [
+        "저장소 이름과 Star·Fork → 조회일과 공개 시점"
+      ],
+      "visual": "가운데 저장소 이름(mono 44px). 아래 큰 숫자 두 개(number 220px, U.counter). 둘째 빌드에서 아래 작은 글씨로 조회일과 첫 Star 날짜. 왼쪽 아래 QR(qr_harness.svg, 220px).",
+      "camera": {
+        "enter": "push",
+        "inner": "dolly-in",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [
+        "qr_harness.svg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F60",
+          "text": "Star 9,367, Fork 1,346",
+          "source": "gh api repos/revfactory/harness, 2026-11-17 00:51 KST 조회",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F63",
+          "text": "첫 Star 2026-03-27",
+          "source": "gh api repos/revfactory/harness/stargazers",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "이 스킬은 올해 3월 말에 공개했습니다. Star가 구천삼백 개를 넘었습니다. 아래 적힌 날짜에 조회한 값입니다. 숫자보다 중요한 것은 쓰는 분들이 보내 주는 수정 요청입니다. QR로 들어가시면 설치 명령 두 줄이 있습니다. (Star·Fork는 발표 당일 아침 다시 조회해 화면 숫자를 고친다. 조회일 표기도 함께 고친다. 「계속 급증」이라는 표현은 쓰지 않는다.)"
+    },
+    {
+      "n": 76,
+      "id": "harness-100",
+      "chapter": "c05",
+      "type": "data",
+      "title": "바로 가져다 쓰는 하네스 100개",
+      "screen": [
+        "Harness-100",
+        "하네스 100개 · 10개 분야",
+        "에이전트 정의 489개 · 스킬 315개",
+        "github.com/revfactory/harness-100"
+      ],
+      "builds": [
+        "이름과 100개·10개 분야 → 489와 315 → 저장소 주소"
+      ],
+      "visual": "10×10 격자의 작은 사각 100개가 분야별 열 줄로 색이 나뉜다. 오른쪽에 숫자(number 140px). 분야 이름 몇 개(문서, 비즈니스, 교육, 데이터, 법률)를 격자 옆에 body 30px로. 숫자 아래에 저장소 주소 github.com/revfactory/harness-100(mono 30px, 2026-11-17 사용자 지시).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F34",
+          "text": "100 / 10 / 489 / 315",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F34)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "직접 구성하기 전에 가져다 쓰셔도 됩니다. 하네스 백 개를 열 개 분야로 모아 뒀습니다. 문서, 비즈니스, 교육, 데이터, 법률 같은 분야입니다. 에이전트 정의가 사백팔십구 개, 스킬이 삼백십오 개 들어 있습니다. 원하는 폴더를 복사해서 시작합니다. 한국어로 쓸 수 있습니다."
+    },
+    {
+      "n": 77,
+      "id": "recap-meta",
+      "chapter": "c05",
+      "type": "recap",
+      "title": "정리: 자동구성.md",
+      "screen": [
+        "자동구성.md",
+        "팀 구성도 한 줄로 요청한다",
+        "만들어진 파일은 사람이 읽고 고친다"
+      ],
+      "builds": [
+        "파일 이름과 요약 → 덧붙이는 한 줄"
+      ],
+      "visual": "왼쪽 파일 트리에 다섯 줄째까지 확인 표시. 오른쪽 요약(display 68px), 둘째 빌드에서 아래 한 줄(body 44px).",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "다섯째 파일 정리입니다. 팀 구성도 한 줄로 요청합니다. 만들어진 파일은 사람이 읽고 고칩니다. 이제 이렇게 만든 팀이 낸 결과물을 보겠습니다."
+    },
+    {
+      "n": 78,
+      "id": "v-cases",
+      "chapter": "c06",
+      "type": "video",
+      "title": "장 전환: 사례.md",
+      "screen": [],
+      "builds": [
+        "영상 재생(15초)"
+      ],
+      "visual": "화면 가득 v06_cases 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": "v06_cases",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 15초. 끝나면: 방금 지나간 화면들을 하나씩 열어 보겠습니다.)"
+    },
+    {
+      "n": 79,
+      "id": "report-harness",
+      "chapter": "c06",
+      "type": "diagram",
+      "title": "보고서 작성 하네스",
+      "screen": [
+        "「시장 동향 보고서 만들어줘」",
+        "오케스트레이터(범위와 순서) → 리서처 → 분석가 → 작성자 → 편집·검토",
+        "완성된 보고서"
+      ],
+      "builds": [
+        "요청 한 줄 → 다섯 역할이 차례로 일함 → 검토를 통과한 결과"
+      ],
+      "visual": "왼쪽 끝에 요청 문장, 오른쪽으로 다섯 칸이 이어진다. 칸마다 역할 이름과 넘겨주는 산출물 이름(범위 문서, 자료 목록, 분석 표, 초안, 검토 의견). 카메라가 왼쪽에서 오른쪽으로 따라간다. 마지막에 문서 한 장(obj_sheet)이 ok 색 확인 표시와 함께 놓인다.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 40,
+      "assets": [
+        "img/obj_sheet.png"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "NOTE-F29",
+          "text": "보고서 작성 하네스 5역할",
+          "source": "연사 이전 발표(「비밀노트」 PDF, 01_researcher_pdf-lecture-notes.md NOTE-F29)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "가장 익숙한 업무부터 보겠습니다. 요청서.md에서 모호하다고 했던 그 요청입니다. 하네스가 있으면 오케스트레이터가 범위와 순서를 정하고, 리서처가 자료를 모읍니다. 분석가가 표로 정리하고, 작성자가 초안을 쓰고, 편집·검토 담당이 확인합니다. 단계마다 넘겨주는 파일이 있습니다. 검토를 통과한 것만 결과로 나옵니다. 같은 한 줄이 들어와도 오케스트레이터가 먼저 범위 문서를 써서 요청서의 빈칸을 채우고 시작합니다."
+    },
+    {
+      "n": 80,
+      "id": "webtoon-team",
+      "chapter": "c06",
+      "type": "diagram",
+      "title": "웹툰 하네스의 역할 아홉",
+      "screen": [
+        "웹툰 하네스 · 역할 9",
+        "캐릭터 디자이너 · 씬 디렉터 · 대사 작성 · 스토리 닥터 · 프롬프트 엔지니어",
+        "이미지 생성 · 말풍선 아티스트 · 패널 조립 · 일관성 QA"
+      ],
+      "builds": [
+        "앞 다섯 역할 → 뒤 네 역할"
+      ],
+      "visual": "이름표 아홉 개가 두 줄로 놓인다(body 38px). 「일관성 QA」만 accent 테두리. 뒤 층에 웹툰 결과 한 컷(webtoon.jpg)을 25%로.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [
+        "cases/webtoon.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F36",
+          "text": "역할 9",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F36)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "개발이 아닌 일입니다. 웹툰 한 회차를 만드는 하네스입니다. 주요 역할이 아홉입니다. 캐릭터를 설계하고, 장면을 나누고, 대사를 쓰고, 이야기를 점검하고, 그림 지시문을 씁니다. 그림을 생성하고, 말풍선을 넣고, 컷을 조립하고, 마지막에 일관성을 검사합니다."
+    },
+    {
+      "n": 81,
+      "id": "webtoon-ssot",
+      "chapter": "c06",
+      "type": "case",
+      "title": "등장인물 다섯의 기준 자산",
+      "screen": [
+        "등장인물 5명 · 기준 자산은 한 곳에",
+        "characters/{이름}/  sheet.json · 정면·측면 초상 · 표정 · 대표 자세"
+      ],
+      "builds": [
+        "인물 그림 다섯 장 → 기준 자산 폴더"
+      ],
+      "visual": "인물 그림 다섯 장(webtoon_char1~5)이 가로로, 가운데가 앞 층·양끝이 뒤 층(시차). 둘째 빌드에서 아래에 폴더 경로와 파일 이름(mono 32px)이 그려지고 그림마다 선으로 이어진다.",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "parallax",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [
+        "cases/webtoon_char1.jpg",
+        "cases/webtoon_char2.jpg",
+        "cases/webtoon_char3.jpg",
+        "cases/webtoon_char4.jpg",
+        "cases/webtoon_char5.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F38",
+          "text": "등장인물 5명, 기준 자산",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F38)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "웹툰에서 어려운 점은 같은 인물이 컷마다 같은 얼굴로 나오는 것입니다. 등장인물이 다섯입니다. 인물마다 기준 자산을 폴더 한 곳에 둡니다. 설정 파일, 정면과 측면 초상, 표정, 대표 자세입니다. 그림을 생성하는 에이전트는 매번 이 폴더를 읽습니다. 앞 대화에 기대지 않고 이 폴더의 파일을 기준으로 그립니다."
+    },
+    {
+      "n": 82,
+      "id": "webtoon-result",
+      "chapter": "c06",
+      "type": "case",
+      "title": "웹툰 결과물",
+      "screen": [
+        "요청 하나로 팀 구성 → 과정과 산출물이 이어짐 → 완성 컷"
+      ],
+      "builds": [
+        "완성된 컷 화면 → 세 단계 주석"
+      ],
+      "visual": "결과 컷 이미지(webtoon_strip.jpg)를 화면 높이 가득, 느리게 위로 흐른다. 둘째 빌드에서 왼쪽에 세 단계 주석이 선과 함께.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [
+        "cases/webtoon_strip.jpg"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "결과입니다. 그림을 제가 그리지 않았습니다. 요청 하나로 팀이 구성되고, 중간 산출물이 다음 역할로 넘어가고, 컷이 완성됐습니다. 마음에 안 드는 컷은 중간 파일을 고쳐서 그 컷만 다시 만듭니다. (연사 확인)"
+    },
+    {
+      "n": 83,
+      "id": "game-request",
+      "chapter": "c06",
+      "type": "case",
+      "title": "게임: 한 줄 요청과 여섯 단계",
+      "screen": [
+        "「타워 디펜스 게임 만들어줘」",
+        "기획 → 구조 설계 → 에셋 생성 → 구현 → 테스트 → QA"
+      ],
+      "builds": [
+        "요청 한 줄 → 여섯 단계"
+      ],
+      "visual": "검은 바탕에 요청 문장(serif 72px). cut으로 들어온다. 둘째 빌드에서 아래에 여섯 단계가 가로 줄로(body 40px), 단계 사이 화살표가 그려진다.",
+      "camera": {
+        "enter": "cut",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F43",
+          "text": "게임 제작 6단계",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F43)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "자동구성.md에서 본 게임입니다. 요청은 한 줄이었습니다. 에이전트 열두 개가 게임 제작을 여섯 단계로 나눠 맡습니다. 기획, 구조 설계, 그림 자산 생성, 구현, 테스트, 품질 검사입니다."
+    },
+    {
+      "n": 84,
+      "id": "game-v1v2",
+      "chapter": "c06",
+      "type": "case",
+      "title": "첫 판과 둘째 판",
+      "screen": [
+        "V1: 경로, 타워 배치, 기본 전투",
+        "V2: 이동 애니메이션, 타워 동작, 단계별 진화"
+      ],
+      "builds": [
+        "V1 화면 → V2 화면"
+      ],
+      "visual": "왼쪽에 V1 화면(game_v1.jpg), 둘째 빌드에서 오른쪽 앞 층에 V2 화면(game_v2.jpg, 가운데 x 1250, y 540)이 더 크게 겹쳐 등장. 화면 아래 한 줄 설명(body 36px). 두 화면이 시차로 움직인다.",
+      "camera": {
+        "enter": "push",
+        "inner": "parallax",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [
+        "cases/game_v1.jpg",
+        "cases/game_v2.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F45",
+          "text": "V1 구성",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F45)",
+          "certainty": "연사 이전 발표"
+        },
+        {
+          "id": "HIRE-F47",
+          "text": "V2 구성",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F47)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "첫 판입니다. 길이 있고, 타워를 놓고, 기본 전투가 됩니다. 둘째 판입니다. 몬스터가 움직이는 동작, 타워의 공격 동작, 단계별로 모양이 바뀌는 진화가 들어갔습니다. 첫 판의 파일과 기록이 남아 있어서, 둘째 판은 그 파일을 고치고 기능을 더해 만들었습니다."
+    },
+    {
+      "n": 85,
+      "id": "game-3d",
+      "chapter": "c06",
+      "type": "case",
+      "title": "3D로 다시 만들기: 약 3시간",
+      "screen": [
+        "/harness blender mcp 를 이용해서 ../tower-defense 게임을 3d 게임으로 리뉴얼하고자 합니다.",
+        "약 3시간 동안 에이전트 팀이 사람 없이 진행",
+        "3D 판 플레이 화면"
+      ],
+      "builds": [
+        "요청 문장 → Blender 작업 화면과 「약 3시간」 → 3D 결과 화면"
+      ],
+      "visual": "위에 터미널 요청 줄(mono 30px). 둘째 빌드에서 Blender 화면(blender.jpg)과 오른쪽 위 「약 3시간」(number 120px). 셋째 빌드에서 3D 플레이 화면(game_3d.jpg)이 화면 가득 커진다.",
+      "camera": {
+        "enter": "zoom-through",
+        "inner": "dolly-in",
+        "target": "오른쪽 V2 게임 화면 가운데, x 1250 y 540"
+      },
+      "seconds": 35,
+      "assets": [
+        "cases/blender.jpg",
+        "cases/game_3d.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F48",
+          "text": "약 3시간",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F48)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "여기서 한 번 더 요청했습니다. 3D 제작 도구 Blender를 연결해서 이 게임을 3D로 다시 만들어 달라는 한 줄입니다. 에이전트 팀이 약 세 시간 동안 제 개입 없이 진행했습니다. 새 폴더를 만들고, Blender를 연결하고, 3D 물체를 만들었습니다. 결과입니다. 3D로 다시 만드는 데 약 세 시간, 첫 판부터 3D까지는 주말 두 번이 걸렸습니다."
+    },
+    {
+      "n": 86,
+      "id": "game-qa",
+      "chapter": "c06",
+      "type": "statement",
+      "title": "에이전트가 직접 플레이하며 검사했다",
+      "screen": [
+        "에이전트가 게임을 직접 플레이하며\n난이도를 조정했습니다.",
+        "만드는 역할과 검사하는 역할이 따로 있었습니다."
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장"
+      ],
+      "visual": "serif 64px 두 덩어리. 「직접 플레이」에 형광 밑줄. 뒤 층에 3D 화면을 15%로.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [
+        "cases/game_3d.jpg"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F49",
+          "text": "에이전트가 직접 플레이하며 밸런스 조정",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F49)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "이 사례에서 제가 가장 눈여겨본 점입니다. 품질 검사 에이전트가 게임을 직접 플레이하면서 난이도를 조정했습니다. 만드는 역할과 검사하는 역할이 따로 있었기 때문에 가능했습니다. 팀.md에서 본 생성 후 검토 구조입니다."
+    },
+    {
+      "n": 87,
+      "id": "drama-team",
+      "chapter": "c06",
+      "type": "diagram",
+      "title": "드라마 대본: 인물마다 에이전트 하나",
+      "screen": [
+        "드라마 대본 · 인물마다 에이전트 하나",
+        "12부작 〈언리얼 아이돌〉 · 장면 657개 · 대본 18,230줄",
+        "기획 · 구조 4: 총괄 작가 · 인물 설계 · 구조 설계 · 씬 분해",
+        "집필 3 + 15: 지문 작가(지문만) · 대화 지휘 · 인물 페르소나 15(각자 자기 대사만) · 대본 조립",
+        "점검 · 검수 4: 대사 코치 · 대본 포맷 · 자연스러움 검수(Codex) · 연속성 검수"
+      ],
+      "builds": [
+        "제목 → 기획·구조 넷 → 집필(지문 작가, 대화 지휘 → 페르소나 15개가 퍼짐 → 대본 조립) → 점검·검수 넷과 화살표"
+      ],
+      "visual": "세 덩어리를 왼쪽에서 오른쪽으로. 왼쪽 기획·구조 카드 넷, 가운데 집필(지문 작가 카드는 accent 테두리, 대화 지휘 카드 아래에서 페르소나 원 15개(8+7)로 가는 선이 퍼지고 다시 대본 조립 카드로 모임), 오른쪽 점검·검수 카드 넷. 카드는 이름 32px과 설명 28px. 머무는 동안 페르소나 원이 돌아가며 밝아지고, 점 하나가 대화 지휘 → 페르소나 → 대본 조립으로 오간다. 출처 줄 없음(발표자 자료).",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "DRM-01",
+          "text": "12부작, 장면 657개, 대본 18,230줄, 인물 21명. 에이전트 파일 27개 = 역할 11 + 인물 페르소나 15 + 폐기한 대사 작가 1",
+          "source": "발표자 프로젝트 기록(drama·unreal-idol 폴더 .claude/agents, FINAL_REPORT, harness-projects data/projects/drama.json, 2026-11-17 확인)",
+          "certainty": "사용자 제공"
+        }
+      ],
+      "example": false,
+      "notes": "이번에는 창작입니다. 12부작 드라마 극본을 하네스로 썼습니다. 장면 657개, 대본 18,230줄입니다. 구성은 세 덩어리입니다. 총괄 작가, 인물 설계, 구조 설계, 씬 분해가 기획과 구조를 정합니다. 지문 작가는 지문만 씁니다. 대사는 인물마다 따로 둔 페르소나 에이전트 15개가 각자 자기 대사만 말하고, 대화 지휘 에이전트가 그 대사를 모아 장면으로 만듭니다. 처음에는 대사 작가 하나가 모든 인물의 대사를 썼는데, 한 사람이 쓴 대화처럼 평면적이라는 피드백을 받고 이 구조로 바꿨습니다. 마지막에 대사 분포, 대본 형식, 번역투, 회차 간 연속성을 따로 검사합니다. 영상 두 편을 보겠습니다. 먼저 티저입니다. (연사 확인)"
+    },
+    {
+      "n": 88,
+      "id": "v-drama-teaser",
+      "chapter": "c06",
+      "type": "video",
+      "title": "드라마 티저 영상",
+      "screen": [],
+      "builds": [
+        "영상 재생(60초)"
+      ],
+      "visual": "화면 가득 v07_drama_teaser 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 60,
+      "assets": [],
+      "video": "v07_drama_teaser",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 60초, 소리 있음. 하네스로 쓴 극본의 홍보 티저다. 끝나면: 이번에는 이 극본을 쓴 에이전트 팀이 어떻게 일했는지 보겠습니다.)"
+    },
+    {
+      "n": 89,
+      "id": "v-drama-team",
+      "chapter": "c06",
+      "type": "video",
+      "title": "드라마 하네스 작업 영상",
+      "screen": [],
+      "builds": [
+        "영상 재생(60초)"
+      ],
+      "visual": "화면 가득 v08_drama_team 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 60,
+      "assets": [],
+      "video": "v08_drama_team",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 60초. 드라마 하네스의 작업 과정. 영상의 「27」은 처음 쓰던 대사 작가까지 센 에이전트 파일 수다. 끝나면: 다음은 업무 사례입니다. 아이디어 메모를 넣으면 특허 출원 준비 서류를 만드는 하네스입니다.)"
+    },
+    {
+      "n": 90,
+      "id": "v-patent",
+      "chapter": "c06",
+      "type": "video",
+      "title": "특허 하네스 소개 영상",
+      "screen": [],
+      "builds": [
+        "영상 재생(96초)"
+      ],
+      "visual": "화면 가득 v09_patent 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 96,
+      "assets": [],
+      "video": "v09_patent",
+      "facts": [],
+      "example": false,
+      "notes": "(영상 96초. 에이전트 15개가 선행기술 검증부터 청구항·명세서·모의 심사·출원 일정까지 맡는 순서를 보여 준다. 끝나면 바로 다음 슬라이드로 넘긴다.)"
+    },
+    {
+      "n": 91,
+      "id": "this-deck",
+      "chapter": "c06",
+      "type": "demo",
+      "title": "이 발표 자료를 만든 하네스",
+      "screen": [
+        "지금 보시는 이 발표 자료",
+        "에이전트 7 · 스킬 8 · 워크플로 2",
+        "리서치 → 스토리보드 → 엔진·이미지·영상 → 장별 제작과 검수 → 통합 검수"
+      ],
+      "builds": [
+        "한 줄 소개 → 구성 숫자와 실제 폴더 → 다섯 단계"
+      ],
+      "visual": "편집기 탐색기 모양으로 이 프로젝트의 실제 폴더를 그린다: `.claude/agents/` 아래 파일 7개(deck-director.md, deck-engine-builder.md, deck-reviewer.md, lecture-researcher.md, motion-video-maker.md, slide-builder.md, visual-asset-maker.md), `.claude/skills/` 8개, `.claude/workflows/` 2개. 위에 숫자 세 개(number 130px). 셋째 빌드에서 아래에 다섯 단계 줄, 카메라가 아래로 옮겨 간다.",
+      "camera": {
+        "enter": "push",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "CLAUDE-MD",
+          "text": "에이전트 7, 스킬 8, 워크플로 2",
+          "source": "프로젝트 CLAUDE.md 변경 이력 2026-11-15, .claude/agents·skills·workflows 폴더",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "마지막 사례는 지금 보고 계신 이 화면입니다. 이 발표 자료를 만든 하네스입니다. 에이전트 일곱, 스킬 여덟, 워크플로 둘입니다. 화면의 파일 이름이 실제 이름입니다. 조사 담당, 구성 담당, 엔진 담당, 슬라이드 담당, 이미지 담당, 영상 담당, 검수 담당입니다. 조사하고, 스토리보드를 쓰고, 엔진과 이미지와 영상을 만들고, 장마다 제작과 검수를 반복하고, 마지막에 전체를 검수했습니다."
+    },
+    {
+      "n": 92,
+      "id": "this-deck-review",
+      "chapter": "c06",
+      "type": "diagram",
+      "title": "장마다 제작 → 독립 검수 → 수정",
+      "screen": [
+        "제작 → 독립 검수 → 수정",
+        "검수 담당은 만든 과정을 모르는 상태에서 화면만 보고 판정한다"
+      ],
+      "builds": [
+        "세 칸 순환 → 검수 담당의 조건"
+      ],
+      "visual": "세 칸이 순환하는 도식(제작, 독립 검수, 수정), 화살표가 그려진다. 검수 칸에서 「유지 / 고침 / 다시 만듦」 세 판정이 갈라져 나온다. 둘째 빌드에서 아래 한 줄(body 40px).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "CLAUDE-MD",
+          "text": "장마다 제작 → 독립 검수 → 수정 반복(장별 제작 워크플로)",
+          "source": "프로젝트 CLAUDE.md 변경 이력 2026-11-15, .claude/agents·skills·workflows 폴더",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "한 가지만 자세히 보겠습니다. 장마다 제작, 독립 검수, 수정을 통과할 때까지 반복했습니다. 검수 담당 에이전트는 만든 과정을 모르는 상태에서 화면만 보고 유지, 고침, 다시 만듦을 판정합니다. 검수 담당은 파일을 고칠 권한이 없습니다. 판정만 합니다. 오늘 화면에 어색한 곳이 있다면 그 판정 기준을 제가 덜 적은 것입니다."
+    },
+    {
+      "n": 93,
+      "id": "recap-cases",
+      "chapter": "c06",
+      "type": "recap",
+      "title": "정리: 사례.md",
+      "screen": [
+        "사례.md",
+        "결과물로 확인한다",
+        "공통점: 중간 산출물이 파일로 남고, 검사하는 역할이 따로 있다"
+      ],
+      "builds": [
+        "파일 이름과 요약 → 사례의 공통점"
+      ],
+      "visual": "왼쪽 파일 트리에 여섯 줄째까지 확인 표시. 오른쪽 요약(display 68px), 둘째 빌드에서 아래 한 줄(body 42px).",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "여섯째 파일 정리입니다. 결과물로 확인합니다. 보고서, 웹툰, 게임, 드라마 대본, 특허, 이 발표 자료의 공통점은 둘입니다. 중간 산출물이 파일로 남고, 검사하는 역할이 따로 있습니다. 마지막 파일이 남았습니다."
+    },
+    {
+      "n": 94,
+      "id": "cover-human",
+      "chapter": "c07",
+      "type": "chapter",
+      "title": "장 표지: 사람.md",
+      "screen": [
+        "사람.md",
+        "기준과 책임은 사람이 정한다"
+      ],
+      "builds": [
+        "파일 이름과 한 줄 요약"
+      ],
+      "visual": "오프닝과 같은 glow 바탕. 왼쪽 파일 트리의 마지막 줄 「사람.md」에 형광 밑줄. 오른쪽 요약(display 96px). 뒤 층에 kv_human 사진을 35%로.",
+      "camera": {
+        "enter": "pull-out",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 12,
+      "assets": [
+        "img/kv_human.png"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "마지막 파일은 사람입니다. 에이전트가 일을 맡아도 사람이 정해야 하는 것이 있습니다."
+    },
+    {
+      "n": 95,
+      "id": "public-ethics",
+      "chapter": "c07",
+      "type": "diagram",
+      "title": "공공부문 AI 윤리기준",
+      "screen": [
+        "공공부문 AI 윤리기준 · 2026년 10월 확정 보도",
+        "6대 가치 · 점검 항목 68개 · 3단계 자율점검",
+        "복지 대상자 선정 · 인허가 · 위험 예측은 사람이 최종 책임"
+      ],
+      "builds": [
+        "기준 이름과 시점 → 숫자 세 개 → 사람이 최종 책임을 지는 업무"
+      ],
+      "visual": "위에 기준 이름(body 40px). 가운데 숫자 세 개(number 150px)와 단위. 셋째 빌드에서 아래에 업무 세 개가 카드로 놓이고 각 카드에 「사람이 최종 책임」 표시(accent 테두리).",
+      "camera": {
+        "enter": "slide-r",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 35,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "PUB-F15",
+          "text": "6 / 68 / 3단계",
+          "source": "01_researcher_web-public.md PUB-F15 (2026-10-01 기사)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "기관에 계신 분들께 직접 해당하는 내용입니다. 지난달 공공부문 AI 윤리기준이 확정됐다는 보도가 있었습니다. 여섯 가지 가치, 점검 항목 예순여덟 개, 3단계 자율점검입니다. 복지 대상자 선정, 인허가, 위험 예측 같은 업무는 사람이 최종 책임을 진다고 적혀 있습니다. 요청서의 권한 칸에 들어갈 내용이 이미 기준으로 정해져 있습니다. (기사 기준이다. 정부 원문은 열어 보지 못했다고 질문이 오면 밝힌다.)"
+    },
+    {
+      "n": 96,
+      "id": "measure-first",
+      "chapter": "c07",
+      "type": "statement",
+      "title": "성과지표와 중단 기준을 먼저",
+      "screen": [
+        "시범 도입부터 한다.",
+        "성과지표와 중단 기준을 미리 정한다."
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장"
+      ],
+      "visual": "display 76px 두 줄, 왼쪽 정렬. 「중단 기준」에 형광 밑줄. 오른쪽 아래 출처 줄: 공공부문 AI 도입·활용 가이드.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "PUB-F16",
+          "text": "시범 도입, 성과지표·중단 기준 사전 설정",
+          "source": "01_researcher_web-public.md PUB-F16 (기사 내 서술)",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "공공부문 AI 도입·활용 가이드도 같은 말을 합니다. 시범 도입부터 합니다. 그리고 성과지표와 중단 기준을 미리 정합니다. 앞에서 본 완료 기준, 한도와 같은 내용입니다. 잘 되면 무엇으로 알 수 있는지, 어떤 경우에 멈추는지를 시작 전에 적습니다."
+    },
+    {
+      "n": 97,
+      "id": "human-four",
+      "chapter": "c07",
+      "type": "diagram",
+      "title": "사람이 맡는 네 가지",
+      "screen": [
+        "목표 설정 · 품질 기준 · 맥락 판단 · 책임과 윤리",
+        "무엇을 풀 것인가 · 왜 중요한가 · 어디까지가 좋은 결과인가"
+      ],
+      "builds": [
+        "네 가지 → 세 질문"
+      ],
+      "visual": "네 낱말이 가로로(display 60px). 둘째 빌드에서 아래에 세 질문이 serif 48px로 한 줄씩.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F51",
+          "text": "사람이 집중할 4가지",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F51)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "사람이 맡는 일은 네 가지로 모입니다. 목표를 정하고, 품질 기준을 정하고, 맥락을 판단하고, 책임을 집니다. 질문으로 바꾸면 셋입니다. 무엇을 풀 것인가, 왜 중요한가, 어디까지가 좋은 결과인가. 이 세 질문의 답이 요청서가 됩니다."
+    },
+    {
+      "n": 98,
+      "id": "tomorrow",
+      "chapter": "c07",
+      "type": "diagram",
+      "title": "내일 해 볼 세 가지",
+      "screen": [
+        "자주 하는 요청 하나를 일곱 칸 요청서로 다시 쓴다",
+        "시작하기 전에 완료 기준을 먼저 적는다",
+        "만드는 역할과 확인하는 역할을 나눈다"
+      ],
+      "builds": [
+        "첫째 → 둘째 → 셋째"
+      ],
+      "visual": "점검표 모양 세 줄. 줄마다 왼쪽에 빈 확인 칸과 번호 원, 문장(serif 50px). 빌드마다 한 줄이 등장하고 카메라가 그 줄로 간다. 줄 오른쪽 끝에 해당 장 파일 이름(mono 26px: 요청서.md, 요청서.md, 팀.md).",
+      "camera": {
+        "enter": "drop",
+        "inner": "track",
+        "target": null
+      },
+      "seconds": 45,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "내일 사무실이나 강의실에서 해 볼 세 가지입니다. 도구는 무엇이든 괜찮습니다. 첫째, 자주 하는 요청 하나를 골라 일곱 칸 요청서로 다시 써 봅니다. 문서 파일 하나면 됩니다. 둘째, 일을 맡기기 전에 완료 기준을 먼저 적습니다. 세 줄이면 충분합니다. 셋째, 만드는 역할과 확인하는 역할을 나눕니다. 대화 창을 하나 더 열어서 결과만 붙여 넣고 요청서 기준으로 검토하게 하는 것부터 시작할 수 있습니다."
+    },
+    {
+      "n": 99,
+      "id": "three-again",
+      "chapter": "c07",
+      "type": "recap",
+      "title": "세 문장 다시",
+      "screen": [
+        "같은 AI도 일하는 환경을 정리하면 결과가 달라진다",
+        "환경은 파일로 적는다: 요청서, 역할, 방법, 순서, 검증",
+        "나뉘는 일은 에이전트 팀에 맡기고, 기준과 책임은 사람이 정한다"
+      ],
+      "builds": [
+        "첫 문장 → 둘째 문장 → 셋째 문장"
+      ],
+      "visual": "오프닝 11번과 같은 배치(serif 54px 세 줄). 이번에는 문장 왼쪽 확인 칸에 빌드마다 확인 표시가 찍힌다. 문장 오른쪽 끝에 근거 숫자를 작게: 첫 문장 옆 「49.5 → 79.3」, 둘째 문장 옆 「53% → 100%」, 셋째 문장 옆 「약 15배」.",
+      "camera": {
+        "enter": "rise",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 25,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "FACT-F01",
+          "text": "49.5 → 79.3",
+          "source": "github.com/revfactory/claude-code-harness README, paper/harness-paper.md 초록",
+          "certainty": "확인"
+        },
+        {
+          "id": "FACT-F10",
+          "text": "53% → 100%",
+          "source": "Vercel 블로그 2026-01-27 (Next.js 16 에이전트 평가)",
+          "certainty": "확인"
+        },
+        {
+          "id": "TREND-F12",
+          "text": "약 15배",
+          "source": "Anthropic 멀티에이전트 리서치 시스템 글 2025-06-13",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "처음에 보여 드린 세 문장입니다. 같은 AI도 일하는 환경을 정리하면 결과가 달라집니다. LangChain은 모델을 그대로 두고 하네스만 고쳐 52.8점에서 66.5점이 됐습니다. 환경은 파일로 적습니다. 읽히는 파일에 넣었을 때 통과율이 53퍼센트에서 100퍼센트가 됐습니다. 셋째, 나뉘는 일은 팀에 맡깁니다. Anthropic 리서치 과제에서 멀티에이전트가 단일 에이전트보다 90.2퍼센트 높은 평가를 받았고, 토큰은 약 15배 썼습니다. 그래서 일의 크기에 맞춰 팀을 꾸립니다. 기준과 책임은 사람이 정합니다."
+    },
+    {
+      "n": 100,
+      "id": "tree-done",
+      "chapter": "c07",
+      "type": "recap",
+      "title": "파일 일곱 개를 모두 열었다",
+      "screen": [
+        "비밀노트/",
+        "환경.md · 요청서.md · 구성.md · 팀.md · 자동구성.md · 사례.md · 사람.md"
+      ],
+      "builds": [
+        "일곱 줄 모두 확인 표시"
+      ],
+      "visual": "pull-out으로 크게 물러나 덱 전체(장 여덟 줄)가 보인 뒤 이 슬라이드에 내려앉는다. 제목 슬라이드의 파일 트리와 같은 배치(mono 44px), 일곱 줄 모두에 형광 밑줄과 ok 색 확인 표시가 위에서부터 0.15초 간격으로 찍힌다.",
+      "camera": {
+        "enter": "pull-out",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 15,
+      "assets": [],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "파일 일곱 개를 모두 열었습니다. 제 비밀노트는 이것이 전부입니다. 특별한 문장은 없고, 적어 둔 파일이 있습니다."
+    },
+    {
+      "n": 101,
+      "id": "final",
+      "chapter": "c07",
+      "type": "statement",
+      "title": "마무리",
+      "screen": [
+        "AI를 쓰는 것을 넘어,\nAI 에이전트 팀을 설계합니다.",
+        "감사합니다 · 황민호"
+      ],
+      "builds": [
+        "마무리 문장",
+        "인사"
+      ],
+      "visual": "가운데 display 92px 두 줄. 「설계합니다」에 형광 밑줄. 둘째 빌드에서 아래 인사와 이름(body 40px). 뒤 층에 kv_title 사진을 30%로(제목 슬라이드와 같은 사진).",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [
+        "img/kv_title.png"
+      ],
+      "video": null,
+      "facts": [
+        {
+          "id": "HIRE-F53",
+          "text": "마무리 문장",
+          "source": "연사 이전 발표(2026-10-08 PDF, 01_researcher_pdf-hire-team.md HIRE-F53)",
+          "certainty": "연사 이전 발표"
+        }
+      ],
+      "example": false,
+      "notes": "AI를 쓰는 데서 그치지 않고 AI 에이전트 팀을 설계하는 시기입니다. 설계할 때 쓰는 것은 오늘 보신 파일들입니다. [클릭] 들어 주셔서 감사합니다."
+    },
+    {
+      "n": 102,
+      "id": "qa",
+      "chapter": "c07",
+      "type": "qa",
+      "title": "질문과 답변",
+      "screen": [
+        "질문과 답변",
+        "github.com/revfactory/harness"
+      ],
+      "builds": [
+        "질문 안내와 QR"
+      ],
+      "visual": "왼쪽에 「질문과 답변」(display 110px), 오른쪽에 QR 두 개(책, 저장소)를 작게. 왼쪽 아래 파일 트리 일곱 줄(확인 표시가 붙은 상태)을 mono 26px로. 배경은 느린 glow.",
+      "camera": {
+        "enter": "cut",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 600,
+      "assets": [
+        "qr_book.svg",
+        "qr_harness.svg"
+      ],
+      "video": null,
+      "facts": [],
+      "example": false,
+      "notes": "(질문 10분. 예상 질문: 실험을 직접 하셨는데 믿을 수 있나 → 한계를 밝히고 LangChain·Vercel 결과를 다시 말한다. 비용은 얼마나 드나 → 약 4배·약 15배, 20분 9달러와 6시간 200달러. 개발자가 아니어도 되나 → 요청서부터. 웹툰과 드라마 대본 사례도 코드를 직접 쓰지 않고 요청과 하네스로 만들었다. 보안·개인정보 → 권한 칸과 공공부문 윤리기준. 질문이 끝나거나 시간이 남으면 → 키로 부록 103~107번 사례 영상을 보여 준다.)"
+    },
+    {
+      "n": 103,
+      "id": "more-cases",
+      "chapter": "c07",
+      "type": "case",
+      "appendix": true,
+      "title": "더 보기: 사례 네 가지",
+      "screen": [
+        "더 보기 · 사례 네 가지",
+        "UX 개선: 지하철 전광판 UX 개선 · youtu.be/lzsA2_9lUeE · ▶ 영상 30초",
+        "UX 개선: 키오스크 UX 개선 · youtu.be/2ig06B9xw9Q · ▶ 영상 30초",
+        "3D 처리: 사계절 한옥 섬 · xr-studio-harness.netlify.app · ▶ 영상 32초",
+        "3D 처리: 오방색 조각보 돔 · ax-studio-demo.netlify.app · ▶ 영상 30초"
+      ],
+      "builds": [
+        "제목 → 카드 네 장이 차례로"
+      ],
+      "visual": "2×2 카드. 왼쪽에 260×156 화면 사진(영상에서 뽑은 프레임), 오른쪽에 분야(UX 개선은 accent2, 3D 처리는 accent), 이름 38px, 주소 mono 28px, 영상 길이. 경로 줄 끔, 출처 줄 없음(발표자 자료). 부록이라 발표 시간 합계에서 뺀다.",
+      "camera": {
+        "enter": "push",
+        "inner": "drift",
+        "target": null
+      },
+      "seconds": 20,
+      "assets": [],
+      "video": null,
+      "facts": [
+        {
+          "id": "APX-01",
+          "text": "영상 길이 30초·30초·32초·30초",
+          "source": "발표자 제공 영상과 사이트(2026-11-17), 파일 길이 측정",
+          "certainty": "확인"
+        }
+      ],
+      "example": false,
+      "notes": "(부록. 질문 시간에 필요하면 보여 준다.) 시간이 남으면 사례 몇 가지를 더 보겠습니다. 화면 두 가지는 UX 개선입니다. 지하철 전광판과 키오스크 화면을 하네스로 다시 설계했습니다. 나머지 두 가지는 3D입니다. 웹 브라우저에서 바로 돌아가는 3D 장면을 에이전트 팀이 만들었고, 그 화면을 녹화해 왔습니다."
+    },
+    {
+      "n": 104,
+      "id": "v-ux-subway",
+      "chapter": "c07",
+      "type": "video",
+      "appendix": true,
+      "title": "부록 영상: 지하철 전광판 UX 개선",
+      "screen": [],
+      "builds": [
+        "영상 재생(30초)"
+      ],
+      "visual": "화면 가득 v10_ux_subway 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": "v10_ux_subway",
+      "facts": [],
+      "example": false,
+      "notes": "(부록 영상 30초. 지하철 전광판 UX 개선. 공개 영상 youtu.be/lzsA2_9lUeE와 같은 파일이다.)"
+    },
+    {
+      "n": 105,
+      "id": "v-ux-kiosk",
+      "chapter": "c07",
+      "type": "video",
+      "appendix": true,
+      "title": "부록 영상: 키오스크 UX 개선",
+      "screen": [],
+      "builds": [
+        "영상 재생(30초)"
+      ],
+      "visual": "화면 가득 v11_ux_kiosk 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": "v11_ux_kiosk",
+      "facts": [],
+      "example": false,
+      "notes": "(부록 영상 30초. 키오스크 UX 개선. 공개 영상 youtu.be/2ig06B9xw9Q와 같은 파일이다.)"
+    },
+    {
+      "n": 106,
+      "id": "v-3d-hanok",
+      "chapter": "c07",
+      "type": "video",
+      "appendix": true,
+      "title": "부록 영상: 사계절 한옥 섬",
+      "screen": [],
+      "builds": [
+        "영상 재생(32초)"
+      ],
+      "visual": "화면 가득 v12_3d_hanok 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 32,
+      "assets": [],
+      "video": "v12_3d_hanok",
+      "facts": [],
+      "example": false,
+      "notes": "(부록 영상 32초, 소리 없음. 사계절 한옥 섬 자동 투어. 봄 낮에서 해 질 녘과 밤, 가을, 겨울 눈 내리는 밤까지 바뀐다.) 브라우저에서 바로 돌아가는 3D 장면입니다. 계절과 시간대를 바꾸는 장면을 에이전트 팀이 만들었습니다. 주소는 xr-studio-harness.netlify.app입니다."
+    },
+    {
+      "n": 107,
+      "id": "v-3d-obang",
+      "chapter": "c07",
+      "type": "video",
+      "appendix": true,
+      "title": "부록 영상: 오방색 조각보 돔",
+      "screen": [],
+      "builds": [
+        "영상 재생(30초)"
+      ],
+      "visual": "화면 가득 v13_3d_obang 재생.",
+      "camera": {
+        "enter": "video",
+        "inner": "none",
+        "target": null
+      },
+      "seconds": 30,
+      "assets": [],
+      "video": "v13_3d_obang",
+      "facts": [],
+      "example": false,
+      "notes": "(부록 영상 30초, 소리 없음. 오방색 조각보 돔 안으로 들어가는 장면, 이 작품을 만든 에이전트 9개와 스킬 6개를 보여 주는 패널, 위에서 본 돔.) 돔 안을 걷는 WebXR 체험입니다. 화면에 나온 것처럼 에이전트 9개가 조사부터 연출까지 나눠 만들었습니다. 주소는 ax-studio-demo.netlify.app입니다."
+    }
+  ],
+  "videos": [
+    {
+      "id": "v01_intro",
+      "kind": "intro",
+      "slide": 2,
+      "seconds": 56.67,
+      "brief": "0~8초: 검은 화면에 입력 커서가 깜박이고 「시장 조사해서 보고서 만들어줘」가 한 글자씩 찍힌다. 8~20초: 문장 아래에 답 한 덩어리가 빠르게 채워지고, 문장 둘레에 빨간 교정 표시로 물음 네 개(어느 시장? 어느 기간? 누가 읽나? 무엇으로 판단하나?)가 붙는다. 20~42초: 같은 문장이 다시 찍히고 이번에는 화면이 넓어지며 문장 둘레에 파일이 하나씩 놓인다(요청서.md, agents/ 아래 파일 넷, skills/, 검증 점검표). 일이 네 줄로 나뉘어 동시에 진행되고, 검증 줄에서 한 항목이 빨강으로 실패했다가 다시 실행되어 초록으로 바뀐다. 42~58초: 화면 가운데 큰 숫자 「49.5 → 79.3」이 세어 올라가고 아래에 「같은 모델 · 과제 15개」(출처 FACT-F01). 58~75초: 파일들이 왼쪽으로 모여 `비밀노트/` 아래 일곱 줄 파일 트리가 되고, 오른쪽에 제목 「AI 시대를 위한 수석 엔지니어의 비밀노트」와 부제가 찍힌다. 「비밀노트」에 형광 노랑 밑줄이 그어지며 끝. 화면 문구는 위에 적은 것만 쓴다. 인물·로고 없음.",
+      "music": "처음 8초는 박자 없는 낮은 전자음과 키보드 타건 효과음. 20초부터 90BPM의 짧은 신시사이저 펄스와 낮은 베이스가 들어오고 42초 숫자 구간에서 가장 커진다. 마지막 5초는 한 음을 길게 남기고 2초 동안 줄어든다. 발표장 스피커 기준으로 타건 소리는 작게.",
+      "starts_from": "대기 화면과 같은 어두운 바탕, 같은 자리(x 420, y 760)에서 깜박이는 입력 커서",
+      "ends_on": "제목 슬라이드(3번) 첫 빌드와 같은 화면: 왼쪽 파일 트리 일곱 줄, 오른쪽 제목과 부제, 「비밀노트」 형광 밑줄. 연사 이름 줄은 없다(슬라이드 둘째 빌드에서 나온다)",
+      "narration": false,
+      "brief_note": "2026-11-16 5차 납품: 56.67초, 112BPM. 자체 시험 점수 구간을 빼고 에이전트 팀 구성·실행 장면으로 바꿨다. 아래 brief는 75초판 기획이고, 실제 구성은 video/v01_intro/제작노트.md를 따른다."
+    },
+    {
+      "id": "v02_env",
+      "kind": "interlude",
+      "slide": 13,
+      "seconds": 14,
+      "brief": "0~3초: 파일 트리에서 「환경.md」 줄이 밝아지며 화면 가득 커진다. 3~10초: 터미널 화면에 명령 줄이 사람 입력 없이 계속 올라가고, 오른쪽 위 시계 아이콘의 바늘이 빠르게 돈다(구체적인 시간 숫자는 넣지 않는다). 10~14초: 터미널이 어두워지고 질문 「AI에게 혼자 일하게 하면 어떤 일이 생길까요?」가 serif로 찍힌다.",
+      "music": "낮은 지속음 하나와 불규칙한 짧은 전자음. 박자 없음. 질문이 찍힐 때 소리가 끊긴다.",
+      "starts_from": "11번 목차 슬라이드의 파일 트리(첫 줄 환경.md)",
+      "ends_on": "어두운 무늬 없는 바탕에 질문 한 문장. 13번 슬라이드의 plain 바탕과 같은 색",
+      "narration": false
+    },
+    {
+      "id": "v03_parts",
+      "kind": "interlude",
+      "slide": 38,
+      "seconds": 13,
+      "brief": "0~3초: 종이 바탕의 파일 트리에서 「구성.md」 줄이 밝아진 뒤 바탕이 어두운 격자로 바뀐다. 3~10초: 편집기 탐색기에 `project/` 폴더가 열리고 CLAUDE.md, .claude/agents/, .claude/skills/, evals/ 줄이 한 줄씩 찍힌다. agents/가 펼쳐져 파일 넷(researcher.md, planner.md, builder.md, reviewer.md)이 보인다. 10~13초: 폴더 트리 위에 「하네스는 폴더 하나에 들어 있습니다」가 찍힌다.",
+      "music": "키보드 타건 효과음과 100BPM의 가벼운 타악 전자음. 마지막 문장에서 한 음으로 끝난다.",
+      "starts_from": "37번 정리 슬라이드의 종이 바탕 파일 트리",
+      "ends_on": "어두운 격자 바탕의 폴더 트리. 39번 슬라이드의 편집기 화면과 같은 틀",
+      "narration": false
+    },
+    {
+      "id": "v04_team",
+      "kind": "interlude",
+      "slide": 52,
+      "seconds": 14,
+      "brief": "0~3초: 파일 트리에서 「팀.md」 줄이 밝아진다. 3~9초: 화면 가운데 점 하나가 작업 조각을 순서대로 처리한다. 점이 둘, 넷, 열여섯으로 나뉘며 조각이 동시에 처리되지만, 화면 아래 토큰 사용량 막대가 1에서 약 4배, 약 15배 눈금까지 함께 길어진다(TREND-F12). 9~14초: 점들이 멈추고 질문 「하나로 충분한가, 여럿이어야 하는가」가 찍힌다.",
+      "music": "점이 나뉠 때마다 음이 하나씩 겹쳐지는 화음. 96BPM. 질문에서 화음이 멈추고 낮은 음 하나만 남는다.",
+      "starts_from": "51번 정리 슬라이드의 격자 바탕 파일 트리",
+      "ends_on": "입자 바탕(field) 가운데 점 하나. 53번 슬라이드 첫 화면과 같은 배치",
+      "narration": false
+    },
+    {
+      "id": "v05_meta",
+      "kind": "interlude",
+      "slide": 66,
+      "seconds": 14,
+      "brief": "0~3초: 파일 트리에서 「자동구성.md」 줄이 밝아지고 바탕이 청사진으로 바뀐다. 3~8초: 터미널 입력 줄에 「/harness 타워 디펜스 웹 게임을 만들고자 합니다」가 찍힌다. 8~14초: 입력 줄에서 흰 선이 뻗어 상자가 차례로 그려진다. 12개, 4개, 1개가 세 줄로 놓이고 줄 옆에 「에이전트 12 · 스킬 4 · 오케스트레이터 1」(HIRE-F42).",
+      "music": "입력 구간은 타건 소리만. 선이 뻗을 때 상승하는 신시사이저 아르페지오, 104BPM. 마지막 상자에서 한 음으로 끝난다.",
+      "starts_from": "65번 정리 슬라이드의 파일 트리",
+      "ends_on": "청사진 바탕에 빈 상자 네 개의 윤곽. 67번 슬라이드 첫 화면과 같은 배치",
+      "narration": false
+    },
+    {
+      "id": "v06_cases",
+      "kind": "interlude",
+      "slide": 78,
+      "seconds": 15,
+      "brief": "0~2초: 파일 트리에서 「사례.md」 줄이 밝아진다. 2~12초: 실제 결과물 화면이 0.8초 간격으로 화면 가득 지나간다. 순서: 소설, 웹툰 컷, 전문서적, 논문, 게임 V1, 게임 V2, Blender 화면, 게임 3D, 웹 서비스 화면 여럿(web_26~33). 사진마다 앞으로 다가오는 느린 이동과 종류 이름 한 낱말. 12~15초: 모든 화면이 작은 격자로 모이고 「모두 요청 한 줄에서 시작했습니다」가 찍힌다.",
+      "music": "110BPM의 밝은 전자 리듬. 사진이 바뀌는 박자에 맞춘 짧은 타악음. 격자로 모일 때 리듬이 멈추고 화음 하나.",
+      "starts_from": "77번 정리 슬라이드의 청사진 바탕 파일 트리",
+      "ends_on": "검은 바탕. 79번 슬라이드 왼쪽 끝의 요청 문장이 놓일 자리만 비어 있다",
+      "narration": false
+    },
+    {
+      "id": "v07_drama_teaser",
+      "kind": "case",
+      "slide": 88,
+      "seconds": 60,
+      "brief": "드라마 하네스로 쓴 12부작 극본 〈언리얼 아이돌〉의 60초 홍보 티저(사용자 제공 영상, 2026-10 제작).",
+      "music": "영상에 들어 있음(약 -14 LUFS, 다른 영상과 같은 크기)",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v08_drama_team",
+      "kind": "case",
+      "slide": 89,
+      "seconds": 60,
+      "brief": "드라마 하네스가 극본을 쓰는 과정(팀 구성, 지문 작가, 페르소나 동시 호출, 검수, 회차 동시 집필)을 보여 주는 60초 영상(사용자 제공).",
+      "music": "영상에 들어 있음(약 -14 LUFS, 다른 영상과 같은 크기)",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v09_patent",
+      "kind": "case",
+      "slide": 90,
+      "seconds": 96,
+      "brief": "특허 발굴·출원 하네스의 에이전트 15개를 단계 순서로 소개하는 96초 영상(사용자 제공, 2026-10 제작).",
+      "music": "영상에 들어 있음(약 -14 LUFS, 다른 영상과 같은 크기)",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v10_ux_subway",
+      "kind": "appendix",
+      "slide": 104,
+      "seconds": 30,
+      "brief": "지하철 전광판 UX 개선 30초 영상(발표자 제공, 공개 유튜브 youtu.be/lzsA2_9lUeE와 같은 파일). 소리 약 -14 LUFS로 맞춤.",
+      "music": "영상에 들어 있음",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v11_ux_kiosk",
+      "kind": "appendix",
+      "slide": 105,
+      "seconds": 30,
+      "brief": "키오스크 UX 개선 30초 영상(발표자 제공, 공개 유튜브 youtu.be/2ig06B9xw9Q와 같은 파일).",
+      "music": "영상에 들어 있음(약 -14 LUFS)",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v12_3d_hanok",
+      "kind": "appendix",
+      "slide": 106,
+      "seconds": 32,
+      "brief": "사계절 한옥 섬(xr-studio-harness.netlify.app) 자동 투어 녹화본 32초. 원본은 cau-slide 덱 footage/tour_full.mp4.",
+      "music": "없음",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    },
+    {
+      "id": "v13_3d_obang",
+      "kind": "appendix",
+      "slide": 107,
+      "seconds": 30,
+      "brief": "오방색 조각보 돔(ax-studio-demo.netlify.app)을 캡처 모드로 찍은 30초. 투어 2.5~14.5초(입장·조각 낙하), 71.5~81.5초(에이전트 9·스킬 6 패널), 90~98초(위에서 본 돔).",
+      "music": "없음",
+      "starts_from": "앞 슬라이드에서 cut",
+      "ends_on": "영상 마지막 프레임",
+      "narration": false
+    }
+  ],
+  "images": [
+    {
+      "name": "bg_standby.png",
+      "aspect": "16:9",
+      "slides": [
+        1
+      ],
+      "cutout": false,
+      "brief": "닫힌 검은 공책 한 권과 형광 노랑 색인 띠 일곱 개가 옆면에 붙어 있는 모습. 책상 대부분은 비어 있고 어둡다. 가운데와 아래쪽은 글자가 올라갈 자리라 사물이 없어야 한다. 공통 양식: 어두운 무광 책상 위 실제 사물을 위에서 또는 비스듬히 찍은 사진풍. 조명은 왼쪽 위 한 곳, 색은 먹색·크림색 종이·형광 노랑 한 가지. 글자·로고·사람 얼굴·손 없음. 종이와 화면은 모두 비어 있다."
+    },
+    {
+      "name": "kv_title.png",
+      "aspect": "16:9",
+      "slides": [
+        3,
+        101
+      ],
+      "cutout": false,
+      "brief": "같은 공책이 펼쳐져 있고 양쪽 면은 빈 종이. 옆면에 형광 노랑 색인 띠 일곱 개. 오른쪽 3분의 2는 어둡게 비워 둔다. 공통 양식: 어두운 무광 책상 위 실제 사물을 위에서 또는 비스듬히 찍은 사진풍. 조명은 왼쪽 위 한 곳, 색은 먹색·크림색 종이·형광 노랑 한 가지. 글자·로고·사람 얼굴·손 없음. 종이와 화면은 모두 비어 있다."
+    },
+    {
+      "name": "inc_server.png",
+      "aspect": "16:9",
+      "slides": [
+        16
+      ],
+      "cutout": false,
+      "brief": "불이 대부분 꺼진 서버실 통로. 서버 랙이 양쪽으로 늘어서 있고 표시등 몇 개만 붉게 켜져 있다. 사람 없음, 글자·로고 없음. 차갑고 어두운 색."
+    },
+    {
+      "name": "tex_paper.png",
+      "aspect": "16:9",
+      "slides": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "cutout": false,
+      "brief": "크림색 종이를 평평하게 스캔한 질감. 섬유 결이 아주 옅게 보이고 얼룩·접힌 자국·글자 없음. 밝기가 고르다."
+    },
+    {
+      "name": "kv_request.png",
+      "aspect": "16:9",
+      "slides": [
+        27
+      ],
+      "cutout": false,
+      "brief": "크림색 종이 서식 한 장을 위에서 찍은 모습. 빈칸 일곱 개가 가는 선으로 나뉘어 있고 칸 안에는 아무것도 없다. 옆에 검은 펜 한 자루와 형광 노랑 펜 한 자루. 밝은 책상. 글자 없음."
+    },
+    {
+      "name": "kv_parts.png",
+      "aspect": "16:9",
+      "slides": [
+        39,
+        51
+      ],
+      "cutout": false,
+      "brief": "색인 칸막이가 달린 서류철 세 개가 나란히 열려 있는 모습을 위에서 찍음. 칸막이 한 개만 형광 노랑. 종이는 모두 비어 있다. 공통 양식: 어두운 무광 책상 위 실제 사물을 위에서 또는 비스듬히 찍은 사진풍. 조명은 왼쪽 위 한 곳, 색은 먹색·크림색 종이·형광 노랑 한 가지. 글자·로고·사람 얼굴·손 없음. 종이와 화면은 모두 비어 있다."
+    },
+    {
+      "name": "kv_team.png",
+      "aspect": "16:9",
+      "slides": [
+        53,
+        65
+      ],
+      "cutout": false,
+      "brief": "빈 색인 카드 다섯 장이 책상 위에 놓여 있다. 한 장은 가운데, 네 장은 둘레에 있고 카드 사이를 가는 실이 잇는다. 가운데 카드만 형광 노랑 테두리. 공통 양식: 어두운 무광 책상 위 실제 사물을 위에서 또는 비스듬히 찍은 사진풍. 조명은 왼쪽 위 한 곳, 색은 먹색·크림색 종이·형광 노랑 한 가지. 글자·로고·사람 얼굴·손 없음. 종이와 화면은 모두 비어 있다."
+    },
+    {
+      "name": "kv_meta.png",
+      "aspect": "16:9",
+      "slides": [
+        67,
+        77
+      ],
+      "cutout": false,
+      "brief": "청색 모눈종이 위에 흰 선으로 그린 빈 사각형 여러 개와 그것을 잇는 선. 옆에 자와 제도용 연필. 사각형 안은 비어 있다. 글자·숫자 없음."
+    },
+    {
+      "name": "kv_cases.png",
+      "aspect": "16:9",
+      "slides": [
+        93
+      ],
+      "cutout": false,
+      "brief": "어두운 벽에 크기가 다른 모니터와 태블릿 여덟 대가 걸려 있고 화면은 색면만 켜져 있다(글자·그림 없음). 한 대만 형광 노랑 빛. 사람 없음."
+    },
+    {
+      "name": "kv_human.png",
+      "aspect": "16:9",
+      "slides": [
+        94
+      ],
+      "cutout": false,
+      "brief": "창가 책상 위에 닫힌 공책과 펜, 빈 점검표 종이 한 장. 창으로 아침 햇빛이 들어온다. 사람·손 없음, 글자 없음. 오프닝 사진과 같은 공책."
+    },
+    {
+      "name": "obj_sheet.png",
+      "aspect": "3:4",
+      "slides": [
+        79
+      ],
+      "cutout": true,
+      "brief": "빈 크림색 종이 한 장. 모서리 하나가 살짝 들려 있다. 단색 배경 위 정면. 누끼용. 글자 없음."
+    },
+    {
+      "name": "obj_folder.png",
+      "aspect": "4:3",
+      "slides": [
+        20,
+        40,
+        70
+      ],
+      "cutout": true,
+      "brief": "닫힌 무광 검은 서류철 하나, 형광 노랑 색인 띠 한 개. 단색 배경 위 비스듬한 각도. 누끼용. 글자·로고 없음."
+    },
+    {
+      "name": "obj_cards.png",
+      "aspect": "4:3",
+      "slides": [
+        54,
+        80
+      ],
+      "cutout": true,
+      "brief": "빈 색인 카드 묶음(열 장 안팎)이 부채 모양으로 펼쳐진 모습. 단색 배경. 누끼용. 글자 없음."
+    }
+  ],
+  "x_case_assets": [
+    {
+      "path": "cases/*.jpg (novel, webtoon, techbook, paper, drama, game_block, lecture, sim3d, webtoon_char1~5, webtoon_strip, game_v1, game_v2, blender, game_3d, web_26~33)",
+      "slides": [
+        78,
+        80,
+        81,
+        82,
+        84,
+        85,
+        86
+      ],
+      "from": "reference/lecture-deck/assets/cases/",
+      "status": "있음(복사)"
+    },
+    {
+      "path": "profile.jpg, qr_book.svg, qr_harness.svg",
+      "slides": [
+        4,
+        75,
+        102
+      ],
+      "from": "reference/lecture-deck/assets/",
+      "status": "있음(복사)"
+    }
+  ]
+}

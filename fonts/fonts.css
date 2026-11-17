@@ -1,0 +1,14 @@
+/* 덱에서 쓰는 서체. 굵기마다 파일이 따로 있으므로 font-weight 를 정확히 맞춰 쓴다. */
+@font-face { font-family: "Pretendard"; src: url("PretendardVariable.ttf") format("truetype"); font-weight: 45 920; font-display: block; }
+@font-face { font-family: "Paperlogy"; src: url("Paperlogy-400.ttf") format("truetype"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Paperlogy"; src: url("Paperlogy-600.ttf") format("truetype"); font-weight: 600; font-display: block; }
+@font-face { font-family: "Paperlogy"; src: url("Paperlogy-700.ttf") format("truetype"); font-weight: 700; font-display: block; }
+@font-face { font-family: "Paperlogy"; src: url("Paperlogy-800.ttf") format("truetype"); font-weight: 800; font-display: block; }
+@font-face { font-family: "Paperlogy"; src: url("Paperlogy-900.ttf") format("truetype"); font-weight: 900; font-display: block; }
+@font-face { font-family: "Noto Serif KR"; src: url("NotoSerifKR-500.ttf") format("truetype"); font-weight: 500; font-display: block; }
+@font-face { font-family: "Noto Serif KR"; src: url("NotoSerifKR-700.ttf") format("truetype"); font-weight: 700; font-display: block; }
+@font-face { font-family: "Noto Serif KR"; src: url("NotoSerifKR-900.ttf") format("truetype"); font-weight: 900; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url("JetBrainsMono-400.ttf") format("truetype"); font-weight: 400; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url("JetBrainsMono-500.ttf") format("truetype"); font-weight: 500; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url("JetBrainsMono-700.ttf") format("truetype"); font-weight: 700; font-display: block; }
+@font-face { font-family: "Anton"; src: url("Anton-400.ttf") format("truetype"); font-weight: 400; font-display: block; }

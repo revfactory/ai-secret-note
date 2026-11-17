@@ -1,0 +1,153 @@
+/* 색·서체 토큰과 기본 스타일.
+ * 아래 10개 색 변수는 storyboard.json concept.palette의 키와 같다. 엔진이 시작할 때 palette가 있으면 :root 인라인 변수로 덮어쓴다.
+ * 여기 값은 storyboard.json revision 1의 concept.palette와 같다(스토리보드를 읽기 전 첫 프레임과 스토리보드가 없는 페이지용). 파생 토큰은 color-mix로 기본 색에서 계산하므로 함께 바뀐다.
+ */
+:root {
+  --bg0: #0e1013;       /* 가장 깊은 바탕 */
+  --bg1: #181c22;       /* 한 단계 밝은 바탕(카드·판) */
+  --ink: #f2efe6;       /* 어두운 바탕 위 글자 */
+  --mut: #8b929b;       /* 보조 글자 */
+  --accent: #ffd84a;    /* 강조 1 */
+  --accent2: #55c8ff;   /* 강조 2 */
+  --ok: #7bd88f;        /* 통과·좋음 */
+  --bad: #ff5c5c;       /* 실패·나쁨 */
+  --paper: #f1ebdd;     /* 밝은 종이 바탕 */
+  --paperInk: #1b1d1a;  /* 종이 위 글자 */
+
+  /* 파생 토큰 */
+  --ink2: color-mix(in srgb, var(--ink) 72%, transparent);
+  --line: color-mix(in srgb, var(--ink) 20%, transparent);
+  --line2: color-mix(in srgb, var(--ink) 10%, transparent);
+  --accentSoft: color-mix(in srgb, var(--accent) 18%, transparent);
+  --accent2Soft: color-mix(in srgb, var(--accent2) 18%, transparent);
+  --card: color-mix(in srgb, var(--bg1) 88%, var(--ink));
+  --paperInk2: color-mix(in srgb, var(--paperInk) 66%, transparent);
+  --paperLine: color-mix(in srgb, var(--paperInk) 18%, transparent);
+  --paper2: color-mix(in srgb, var(--paper) 90%, var(--paperInk));
+  --okInk: color-mix(in srgb, var(--ok) 60%, var(--paperInk));   /* 종이 바탕 위 확인 표시(#558d60 근처) */
+  --mark: var(--accent);                                          /* 형광 노랑 밑줄 */
+
+  /* 서체(concept.fonts가 있으면 엔진이 이름과 굵기를 바꾼다. "Paperlogy 900" → --display "Paperlogy", --displayW 900).
+     JetBrains Mono·Anton에는 한글이 없어 한글은 Pretendard로 그린다(fonts/fonts.css가 모두 로컬 파일, CDN 없음) */
+  --display: "Paperlogy", "Pretendard", sans-serif;
+  --displayW: 900;
+  --sans: "Pretendard", sans-serif;
+  --serif: "Noto Serif KR", "Pretendard", serif;
+  --mono: "JetBrains Mono", "Pretendard", monospace;
+  --num: "Anton", "Pretendard", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+body.nocursor, body.nocursor * { cursor: none !important; }
+#wrap { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#stage { position: relative; overflow: hidden; background: var(--bg0); color: var(--ink); font-family: var(--sans);
+  font-kerning: normal; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; word-break: keep-all; }
+
+/* 층: #bg(화면 고정 배경) → #view(원근) > .world(카메라) > .slide·.plate·.ghost → .video(영상) → .top(화면 고정 상단) */
+.layer, .bglayer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.layer.bg { z-index: 0; transform-origin: 50% 50%; }
+.layer.view { z-index: 1; perspective-origin: 960px 540px; overflow: hidden; }
+.world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 540px; pointer-events: none; }
+.slide { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 50% 50%; }
+.plate { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; border-radius: 30px; pointer-events: none;
+  background: color-mix(in srgb, var(--bg1) 78%, transparent); border: 3px solid var(--line);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent) inset; }
+.plate.light { background: var(--paper); border-color: var(--paperLine); box-shadow: none; }
+.ghost { position: absolute; left: 640px; top: 360px; width: 640px; height: 360px; transform-origin: 50% 50%; border-radius: 10px; overflow: hidden;
+  background: var(--bg1); border: 2px solid var(--line); pointer-events: auto; cursor: pointer; }
+.ghost .gimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ghost .gt { position: absolute; inset: 0; padding: 28px 30px; font: 700 34px/1.25 var(--sans); color: var(--ink); word-break: keep-all; }
+.ghost .gt b { display: block; font: 400 56px/1 var(--num); color: var(--accent); margin-bottom: 14px; }
+.ghost.here { border-color: var(--accent); }
+.ghost.sel { border: 6px solid var(--accent2); }
+.layer.video { z-index: 50; pointer-events: none; }
+.vslide { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #000; overflow: hidden; transform-origin: 50% 50%; }
+.vslide video, .vslide .vposter { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: contain; background: #000; display: block; }
+.vcard { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 200px; gap: 22px;
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, var(--bg1), var(--bg0)); isolation: isolate; overflow: hidden; }
+.vcard .vglow { position: absolute; left: 0; top: -20%; width: 900px; height: 140%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 14%, transparent), transparent); }
+.vcard .vk { font: 700 34px var(--sans); color: var(--accent); letter-spacing: .02em; }
+.vcard .vt { font: 900 96px/1.12 var(--display); color: var(--ink); letter-spacing: -.03em; }
+.vcard .vf { font: 500 30px var(--mono); color: var(--mut); }
+.vcard .vbar { margin-top: 26px; width: 100%; height: 6px; border-radius: 3px; background: var(--line2); overflow: hidden; }
+.vcard .vbar i { display: block; width: 100%; height: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
+.layer.top { pointer-events: none; z-index: 100; }
+
+/* 공통 크롬(엔진이 #top 층에 그림. 화면 고정). 위치는 _workspace/03_engine_api.md "공통 크롬"과 같다 */
+.chrome { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.ch-path { position: absolute; left: 160px; top: 100px; height: 30px; font: 500 22px/30px var(--mono); color: var(--mut); white-space: nowrap; letter-spacing: 0; }
+.ch-cur { display: inline-block; width: 12px; height: 24px; margin-left: 3px; vertical-align: -5px; background: currentColor; }
+.ch-src { position: absolute; right: 160px; top: 940px; height: 30px; font: 500 24px/30px var(--sans); color: var(--mut); white-space: nowrap; text-align: right; }
+.ch-num { position: absolute; right: 56px; top: 1018px; height: 30px; font: 500 22px/30px var(--mono); color: var(--mut); white-space: nowrap; text-align: right; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.ch-ex { position: absolute; right: 160px; top: 96px; height: 48px; padding: 0 22px; font: 800 28px/44px var(--sans); color: var(--accent2); white-space: nowrap;
+  border: 2px solid var(--accent2); border-radius: 999px; background: color-mix(in srgb, var(--bg0) 50%, transparent); }
+.ch-ex.light { color: color-mix(in srgb, var(--accent2) 45%, var(--paperInk)); border-color: currentColor; background: rgba(255, 255, 255, .4); }
+
+/* 형광 노랑 밑줄(U.mark). 막대는 글자 뒤 배경으로 그린다(위치·두께는 U.mark가 정함) */
+.mk { background-repeat: no-repeat; padding: 0 .08em; margin: 0 -.08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* 파일 트리(U.fileTree) */
+.ftree { position: absolute; color: var(--ink); }
+.ftree .fr { position: absolute; left: 0; white-space: nowrap; }
+.ftree .fh { font-family: var(--mono); font-weight: 700; }
+.ftree .fn { position: absolute; font-family: var(--mono); font-weight: 500; }
+.ftree .fl { position: absolute; background: var(--mut); opacity: .55; transform-origin: 50% 0; }
+.ftree .fk { position: absolute; overflow: visible; }
+.ftree.light { color: var(--paperInk); }
+.ftree.light .fl { background: var(--paperInk); opacity: .3; }
+
+/* 자리 표시 슬라이드(엔진이 그림). 글자는 모두 28px 이상, x 220~1700 · y 190~890 안 */
+.ph { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; color: var(--ink); }
+.ph.light { color: var(--paperInk); }
+.ph-glow { position: absolute; left: 660px; top: 240px; width: 600px; height: 600px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 16%, transparent), transparent); }
+.ph.light .ph-glow { background: radial-gradient(closest-side, color-mix(in srgb, var(--paperInk) 9%, transparent), transparent); }
+.ph-frame { position: absolute; left: 200px; top: 160px; width: 1520px; height: 760px; border: 3px dashed var(--line); border-radius: 28px; }
+.ph.light .ph-frame { border-color: var(--paperLine); }
+.ph-num { position: absolute; left: 240px; top: 196px; font: 400 150px/1 var(--num); color: var(--accent); font-variant-numeric: tabular-nums; }
+.ph.light .ph-num { color: var(--paperInk); }
+.ph-meta { position: absolute; left: 470px; top: 200px; font: 500 30px/1.2 var(--mono); color: var(--mut); white-space: nowrap; }
+.ph.light .ph-meta { color: var(--paperInk2); }
+.ph-title { position: absolute; left: 470px; top: 252px; font: var(--displayW, 900) 60px/1.15 var(--display); letter-spacing: -.02em; white-space: nowrap; }
+.ph-lines { position: absolute; left: 240px; top: 420px; width: 1440px; font: 500 36px/1.38 var(--sans); color: var(--ink2); }
+.ph.light .ph-lines { color: var(--paperInk2); }
+.ph-line { position: relative; padding-left: 30px; margin-bottom: .2em; white-space: pre-line; }
+.ph-line::before { content: ''; position: absolute; left: 0; top: .36em; width: 10px; height: .66em; border-radius: 3px; background: var(--accent); opacity: .75; }
+.ph-build { position: absolute; left: 240px; top: 792px; width: 1440px; height: 44px; overflow: hidden; white-space: nowrap; font: 500 30px/44px var(--sans); color: var(--mut); }
+.ph.light .ph-build { color: var(--paperInk2); }
+.ph-bn { font: 700 30px/44px var(--mono); color: var(--accent); margin-right: 18px; }
+.ph.light .ph-bn { color: var(--paperInk); }
+.ph-bt { display: inline-block; }
+.ph-tag { position: absolute; left: 240px; top: 850px; font: 500 30px/1.3 var(--mono); color: var(--mut); white-space: nowrap; }
+.ph.light .ph-tag { color: var(--paperInk2); }
+.ph-zoom { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 4px dashed var(--accent2); box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent2) 14%, transparent); }
+
+/* 슬라이드 안에서 쓰는 기본 클래스(원본과 같음) */
+.a { position: absolute; }
+.full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.nw { white-space: nowrap; }
+.center { position: absolute; left: 0; right: 0; text-align: center; }
+.display { font-family: var(--display); font-weight: var(--displayW, 900); letter-spacing: -0.035em; line-height: 1.08; }
+.serif { font-family: var(--serif); }
+.mono { font-family: var(--mono); }
+.tnum { font-variant-numeric: tabular-nums; }
+svg { overflow: visible; }
+canvas { display: block; }
+
+/* 발표 UI(render 모드에서는 만들지 않는다). 화면 끄기는 엔진이 프레임마다 opacity를 바꾼다 */
+.ui-black { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 50; }
+.ui-help, .ui-goto { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: color-mix(in srgb, var(--bg0) 94%, transparent); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); border-radius: 14px; padding: 28px 36px; font: 500 16px/1.6 "Pretendard", sans-serif; display: none; z-index: 60; }
+.ui-help.on, .ui-goto.on { display: block; }
+.ui-goto { font: 800 44px "Pretendard"; padding: 18px 36px; color: var(--accent); }
+.ui-help h3 { margin: 0 0 12px; font: 800 20px "Pretendard"; color: var(--accent); }
+.ui-help dl { display: grid; grid-template-columns: auto auto; gap: 6px 28px; margin: 0; }
+.ui-help dt { font-family: "JetBrains Mono", "Pretendard", monospace; color: var(--accent); font-size: 14px; }
+.ui-help dd { margin: 0; }
+.ui-ovhint { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); display: none; z-index: 58; padding: 10px 22px; border-radius: 999px;
+  background: color-mix(in srgb, var(--bg0) 88%, transparent); color: var(--ink); font: 600 16px "Pretendard"; border: 1px solid var(--line); }
+.ui-ovhint.on { display: block; }
+.ui-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  font: 800 56px/1.4 var(--sans); color: var(--ink); }
+.ui-empty small { font: 500 30px var(--sans); color: var(--mut); }
